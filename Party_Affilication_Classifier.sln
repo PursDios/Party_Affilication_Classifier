@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Party_Affilication_Classifier", "Party_Affilication_Classifier\Party_Affilication_Classifier.csproj", "{6631B305-8839-4490-912C-20A4A616B4D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6631B305-8839-4490-912C-20A4A616B4D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6631B305-8839-4490-912C-20A4A616B4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6631B305-8839-4490-912C-20A4A616B4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6631B305-8839-4490-912C-20A4A616B4D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA715261-9834-40D8-8D0F-90027E9E329B}
+	EndGlobalSection
+EndGlobal
