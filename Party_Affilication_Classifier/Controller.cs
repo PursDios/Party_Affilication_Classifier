@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Party_Affilication_Classifier
 {
-    class Controller
+    public class Controller
     {
-        public Controller()
-        {
-            MainMenu();
-        }
         public void MainMenu()
         {
             bool retry = true;
@@ -51,11 +47,11 @@ namespace Party_Affilication_Classifier
             foreach(FileInfo f in files)
             {
                 i++;
-                Console.WriteLine(i + " " + f.Name);
+                Console.WriteLine(i + ") " + f.Name);
             }
             string selection = Console.ReadLine();
             string[] splitSelection = selection.Split(',');
-
+            Console.Clear();
             Console.WriteLine("You have selected: ");
             foreach (string s in splitSelection)
             {

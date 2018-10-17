@@ -11,6 +11,7 @@ namespace Party_Affilication_Classifier
         static void Main(string[] args)
         {
             Controller c = new Controller();
+            c.MainMenu();
         }
     }
 }
