@@ -9,6 +9,9 @@ namespace Party_Affilication_Classifier
 {
     public class Controller
     {
+        List<string> AllCategories = new List<string> { "Labour", "Conservative", "Coalition" };
+        List<string> selectedCats = new List<string>();
+
         public void MainMenu()
         {
             bool retry = true;
@@ -58,6 +61,24 @@ namespace Party_Affilication_Classifier
                 Console.WriteLine(files[int.Parse(s) - 1].Name);
             }
             Console.ReadLine();
+            getCategories(files);
+
+        }
+        private void getCategories(FileInfo[] files)
+        {
+            foreach(FileInfo f in files)
+            {
+                foreach(string c in AllCategories)
+                {
+                    if(f.Name.Contains(c))
+                    {
+                        if (!selectedCats.Any(x => x.ToString() == c))
+                        {
+                            selectedCats.Add(c);
+                        }
+                    }
+                }
+            }
         }
         protected void Consult()
         {
