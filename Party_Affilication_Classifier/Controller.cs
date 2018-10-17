@@ -9,9 +9,6 @@ namespace Party_Affilication_Classifier
 {
     public class Controller
     {
-        List<string> AllCategories = new List<string> { "Labour", "Conservative", "Coalition" };
-        List<string> selectedCats = new List<string>();
-
         public void MainMenu()
         {
             bool retry = true;
@@ -40,20 +37,28 @@ namespace Party_Affilication_Classifier
                 Consult();
             }
         }
+        //Calls all of the nessecary methods required to train the program correctly.
         protected void Training()
         {
-            int i = 0;
+            AITraining AI = new AITraining();
+            //All the possible categories of government (E.G labour, conservative etc. This is to allow the program to easily be expanded upon).
+            List<string> allCategories = new List<string> { "Labour", "Conservative", "Coalition" };
+            //All the categories selected for training
+            List<string> selectedCats = new List<string>();
+
             DirectoryInfo d = new DirectoryInfo("TrainingFiles");
             FileInfo[] files = d.GetFiles("*.txt");
-
             Console.WriteLine("Please select which files you'd like to use split up by a comma");
-            foreach(FileInfo f in files)
+
+            int i = 0;
+            foreach (FileInfo f in files)
             {
                 i++;
                 Console.WriteLine(i + ") " + f.Name);
             }
             string selection = Console.ReadLine();
             string[] splitSelection = selection.Split(',');
+
             Console.Clear();
             Console.WriteLine("You have selected: ");
             foreach (string s in splitSelection)
@@ -61,24 +66,9 @@ namespace Party_Affilication_Classifier
                 Console.WriteLine(files[int.Parse(s) - 1].Name);
             }
             Console.ReadLine();
-            getCategories(files);
 
-        }
-        private void getCategories(FileInfo[] files)
-        {
-            foreach(FileInfo f in files)
-            {
-                foreach(string c in AllCategories)
-                {
-                    if(f.Name.Contains(c))
-                    {
-                        if (!selectedCats.Any(x => x.ToString() == c))
-                        {
-                            selectedCats.Add(c);
-                        }
-                    }
-                }
-            }
+            AI.GetCategories(files, allCategories, selectedCats);
+            AI.TrainingWords();
         }
         protected void Consult()
         {
