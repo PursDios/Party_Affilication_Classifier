@@ -9,98 +9,111 @@ namespace Party_Affilication_Classifier
 {
     public class AITraining
     {
-        private Dictionary<string, int> m_Labour = new Dictionary<string, int>();
-        public Dictionary<string,int> get_Labour { get { return m_Labour; } set { m_Labour = value; } }
-
-        private Dictionary<string, int> m_Conservative = new Dictionary<string, int>();
-        public Dictionary<string,int> get_Conservative { get { return m_Conservative; } set { m_Conservative = value; } }
-
-        private Dictionary<string, int> m_Coalition = new Dictionary<string, int>();
-        public Dictionary<string,int> Coalition { get { return m_Coalition; } set { m_Coalition = value; } }
-
-        //The files selected for training being ordered in order of category.
-        Dictionary<FileInfo, string> fileCats = new Dictionary<FileInfo, string>();
-
-        //Gets the party affilication of all of the selected files
-        public void GetCategories(FileInfo[] files, List<string> allCategories, List<string> selectedCats)
+        /// <summary>
+        /// Gets the party affilication of all of the selected files
+        /// </summary>
+        /// <param name="files">The array of files.</param>
+        /// <param name="allCategories">All the possible catagories</param>
+        /// <param name="selectedCats">The list of filtered catagories</param>
+        public List<Party> GetCategories(FileInfo[] files, List<string> allCategories)
         {
+            List<string> filteredCats = new List<string>();
+            List<Party> filteredParties = new List<Party>();
             foreach (FileInfo f in files)
             {
                 foreach (string c in allCategories)
                 {
                     if (f.Name.Contains(c))
                     {
-                        if (!selectedCats.Any(x => x.ToString() == c))
+                        if (!filteredCats.Any(x => x.ToString() == c))
                         {
-                            selectedCats.Add(c);
-                            fileCats.Add(f, c);
+                            filteredCats.Add(c);
+                            filteredParties.Add(new Party(c));
                         }
                     }
                 }
             }
-
+            return filteredParties;
         }
-        //Reads all of he words in each file and assigns them as words used by a particular party.
-        public void TrainingWords()
+        /// <summary>
+        /// Sorts all of the files into the party list
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="partList"></param>
+        public void sortFiles(FileInfo[] files, List<Party> partyList)
+        {
+            foreach(FileInfo f in files)
+            {
+                foreach(Party p in partyList)
+                {
+                    if(f.Name.Contains(p.getName))
+                    {
+                        p.getSpeechList.Add(f);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Reads all of he words in each file and assigns them as words used by a particular party.
+        /// </summary>
+        public void TrainingWords(List<Party> partyList)
         {
             StreamReader sr;
-            foreach (KeyValuePair<FileInfo, string> f in fileCats)
+            //for each party.
+            foreach(Party p in partyList)
             {
-                if (f.Value == "Labour")
+                //for each speech assosiated with the party
+                foreach(FileInfo f in p.getSpeechList)
                 {
-                    sr = new StreamReader (@"TrainingFiles\" +  f.Key.ToString());
-                    string s = sr.ReadToEnd();
-                    string[] splitWords = s.Split(' ');
-
-                    foreach(string str in splitWords)
+                    //split all the words in the speech
+                    sr = new StreamReader(@"TrainingFiles\" + f.Name);
+                    string str = sr.ReadToEnd();
+                    string[] splitWords = str.Split(' ');
+                    
+                    //for each word in the speech
+                    foreach(string s in splitWords)
                     {
-                        if(!get_Labour.ContainsKey(str))
+                        str = removeGrammar(s);
+                        //checks if the word is in the wordlist currently.
+                        if(p.getWordFreq.ContainsKey(str))
                         {
-                            get_Labour.Add(str, 1);
+                            //finds the word and adds one to the frequency of the word
+                            p.getWordFreq[str]++;
                         }
                         else
                         {
-                            get_Labour[str]++;
-                        }
-                    }
-                }
-                if (f.Value == "Conservative")
-                {
-                    sr = new StreamReader(@"TrainingFiles\" + f.Key.ToString());
-                    string s = sr.ReadToEnd();
-                    string[] splitWords = s.Split(' ');
-
-                    foreach (string str in splitWords)
-                    {
-                        if (!get_Labour.ContainsKey(str))
-                        {
-                            get_Labour.Add(str, 1);
-                        }
-                        else
-                        {
-                            get_Labour[str]++;
-                        }
-                    }
-                }
-                if (f.Value == "Coalition")
-                {
-                    sr = new StreamReader(@"TrainingFiles\" + f.Key.ToString());
-                    string s = sr.ReadToEnd();
-                    string[] splitWords = s.Split(' ');
-
-                    foreach (string str in splitWords)
-                    {
-                        if (!get_Labour.ContainsKey(str))
-                        {
-                            get_Labour.Add(str, 1);
-                        }
-                        else
-                        {
-                            get_Labour[str]++;
+                            //if the word is not in the word list adds the word to the word list with a frequency of 1.
+                            p.getWordFreq.Add(str, 1);
                         }
                     }
                 }
             }
+        }
+        /// <summary>
+        /// Gives the probability of each word being in the catagory mentioned.
+        /// </summary>
+        public void getWordProbability(List<Party> partyList)
+        {
+            double totalWords=0;
+            foreach(Party p in partyList)
+            {
+                totalWords = totalWords + p.getWordFreq.Count();
+            }
+            foreach(Party p in partyList)
+            {
+                Console.WriteLine("--- " + p.getName + "---");
+                foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
+                {
+                    p.getWordProbabilities.Add(kvp.Key,(double)(kvp.Value + 1) / (p.getWordFreq.Count() + totalWords));
+                    //output to a file at some point.
+                }
+            }
+        }
+        private string removeGrammar(string s)
+        {
+            List<char> forbiddenChars = new List<char> { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
+            s = s.Trim(new char[] {'"', ':', ';', '\n', '\t', '.', ',', '\r'});
+            return s;
         }
     }
 }

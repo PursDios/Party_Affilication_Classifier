@@ -9,17 +9,22 @@ namespace Party_Affilication_Classifier
 {
     public class Controller
     {
+        /// <summary>
+        /// Allows the user to navigate the program
+        /// </summary>
         public void MainMenu()
         {
             bool retry = true;
-            int choice = 0;
+            char choice=' ';
             do
             {
                 Console.WriteLine("1) Undertake Training");
                 Console.WriteLine("2) Undertake a Classification");
+                Console.WriteLine("Q) Exit");
                 try
                 {
-                    choice = int.Parse(Console.ReadLine());
+                    choice = char.Parse(Console.ReadLine());
+                    choice = char.ToLower(choice);
                     retry = false;
                 }
                 catch
@@ -27,24 +32,34 @@ namespace Party_Affilication_Classifier
                     Console.WriteLine("Invalid Selection. Please try again");
                     Console.ReadLine();
                 }
+            
+                switch(choice)
+                {
+                    case '1':
+                        Training();
+                        break;
+                    case '2':
+                        Consult();
+                        break;
+                    case 'Q':
+                        break;
+                    default:
+                        Console.WriteLine("Please only input 1, 2 or Q");
+                        Console.ReadLine();
+                        retry = true;
+                        break;
+                }
             } while (retry != false);
-            if (choice == 1)
-            {
-                Training();
-            }
-            else if (choice == 2)
-            {
-                Consult();
-            }
         }
-        //Calls all of the nessecary methods required to train the program correctly.
-        protected void Training()
+        /// <summary>
+        /// Calls all of the nessecary methods required to train the program correctly.
+        /// </summary>
+        private void Training()
         {
             AITraining AI = new AITraining();
             //All the possible categories of government (E.G labour, conservative etc. This is to allow the program to easily be expanded upon).
             List<string> allCategories = new List<string> { "Labour", "Conservative", "Coalition" };
-            //All the categories selected for training
-            List<string> selectedCats = new List<string>();
+            List<Party> partyList = new List<Party>();
 
             DirectoryInfo d = new DirectoryInfo("TrainingFiles");
             FileInfo[] files = d.GetFiles("*.txt");
@@ -66,11 +81,14 @@ namespace Party_Affilication_Classifier
                 Console.WriteLine(files[int.Parse(s) - 1].Name);
             }
             Console.ReadLine();
+            Console.Clear();
 
-            AI.GetCategories(files, allCategories, selectedCats);
-            AI.TrainingWords();
+            partyList = AI.GetCategories(files, allCategories);
+            AI.sortFiles(files, partyList);
+            AI.TrainingWords(partyList);
+            AI.getWordProbability(partyList);
         }
-        protected void Consult()
+        private void Consult()
         {
 
         }
