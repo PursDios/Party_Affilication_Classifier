@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Party_Affilication_Classifier
@@ -68,12 +69,11 @@ namespace Party_Affilication_Classifier
                     //split all the words in the speech
                     sr = new StreamReader(@"TrainingFiles\" + f.Name);
                     string str = sr.ReadToEnd();
+                    str = removeGrammar(str);
                     string[] splitWords = str.Split(' ');
-                    
                     //for each word in the speech
                     foreach(string s in splitWords)
                     {
-                        str = removeGrammar(s);
                         //checks if the word is in the wordlist currently.
                         if(p.getWordFreq.ContainsKey(str))
                         {
@@ -108,11 +108,40 @@ namespace Party_Affilication_Classifier
                     //output to a file at some point.
                 }
             }
+            StreamWriter sr = new StreamWriter("WordProbability.txt");
+
+            foreach(Party p in partyList)
+            {
+                sr.WriteLine("-----" + p.getName + "-----");
+                foreach(KeyValuePair<string,double> kvp in p.getWordProbabilities)
+                {
+                    sr.WriteLine("Word: " + kvp.Key + ", Frequency: " + p.getWordFreq[kvp.Key] + " Probability: " + kvp.Value);
+                }
+                sr.WriteLine("\n\n\n\n");
+            }
         }
+        /// <summary>
+        /// removes all forbidden characters or grammar from the given string. This should be done prior to calculations
+        /// </summary>
+        /// <param name="s">string to be filtered.</param>
+        /// <returns></returns>
         private string removeGrammar(string s)
         {
-            List<char> forbiddenChars = new List<char> { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
-            s = s.Trim(new char[] {'"', ':', ';', '\n', '\t', '.', ',', '\r'});
+            //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
+            char[] forbiddenChars = { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
+            char[] chars = s.ToCharArray();
+
+            for (int i = 0; i < chars.Count(); i++)
+            {
+                foreach (char c in forbiddenChars)
+                {
+                    if (c == chars[i])
+                    {
+                        chars[i] = ' ';
+                    }
+                }
+            }
+            s = new string(chars);
             return s;
         }
     }

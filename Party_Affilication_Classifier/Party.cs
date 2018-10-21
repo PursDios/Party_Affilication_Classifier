@@ -25,6 +25,10 @@ namespace Party_Affilication_Classifier
             m_WordProbabilities = new Dictionary<string,double>();
             m_Name = partyName;
         }
+        public Party()
+        {
+            //needed for serializer.
+        }
         private void removeSpeechGrammar()
         {
             //remove all special characters from speeches { '"', ':', ';', '\n', '\t', '.', ',', '\r' }
