@@ -9,6 +9,10 @@ namespace Party_Affilication_Classifier
 {
     public class Controller
     {
+        //All the possible categories of government (E.G labour, conservative etc. This is to allow the program to easily be expanded upon).
+        List<string> allCategories = new List<string> { "Labour", "Conservative", "Coalition" };
+        List<Party> partyList = new List<Party>();
+
         /// <summary>
         /// Allows the user to navigate the program
         /// </summary>
@@ -57,9 +61,6 @@ namespace Party_Affilication_Classifier
         private void Training()
         {
             AITraining AI = new AITraining();
-            //All the possible categories of government (E.G labour, conservative etc. This is to allow the program to easily be expanded upon).
-            List<string> allCategories = new List<string> { "Labour", "Conservative", "Coalition" };
-            List<Party> partyList = new List<Party>();
 
             DirectoryInfo d = new DirectoryInfo("TrainingFiles");
             FileInfo[] files = d.GetFiles("*.txt");
@@ -88,9 +89,74 @@ namespace Party_Affilication_Classifier
             AI.TrainingWords(partyList);
             AI.getWordProbability(partyList);
         }
+        /// <summary>
+        /// Method used to determine the party affilication of a given file.
+        /// </summary>
         private void Consult()
         {
+            //ADD VALIDATION TO CHECK TRAINING HAS BEEN DONE HERE.
+            if(partyList.Count() == 0)
+            {
+                Console.WriteLine("No training has been performed during this run. \nLoading prior training...");
+                LoadPriorTraining();
+            }
 
+            AIConsult AI = new AIConsult();
+            FileInfo consultFile;
+
+            consultFile = AI.SelectFile();
+        }
+        /// <summary>
+        /// Loads previously saved training data.
+        /// </summary>
+        private void LoadPriorTraining()
+        {
+            StreamReader sr = new StreamReader("WordProbability.txt");
+            int numOfLines = File.ReadAllLines("WordProbability.txt").Length;
+            int partyNum = -1;
+            //for each line in the document.
+            for (int i = 0; i < numOfLines; i++)
+            {
+                string str = sr.ReadLine();
+                //if the word is a party name
+                if(allCategories.Any(x => x.ToString().ToUpper() == str))
+                {
+                    str.ToLower();
+                    partyList.Add(new Party(char.ToUpper(str[0]) + str.Substring(1)));
+                    partyNum++;
+                }
+                //if the string isn't blank.
+                else if(str != "")
+                {
+                    List<string> stringSplit = new List<string>();
+                    List<string> splitViaColon = new List<string>();
+                    List<string> sortedValues = new List<string>();
+
+                    //split the line into the word, frequency and probability
+                    stringSplit = str.Split(',').ToArray().ToList();
+
+                    foreach(string spl in stringSplit)
+                    {
+                        //splits the Word:, Frequency: and Probability: From the actual content by ensuring that the relevent information is always stored in an odd element number.
+                        splitViaColon = spl.Split(':').ToArray().ToList();
+                        foreach(string s in splitViaColon)
+                        {
+                            sortedValues.Add(s);
+                        }
+                    }
+                    //Populates the word frequency and word probability dictionaries with the relevent information from the text document. 
+                    partyList[partyNum].getWordFreq.Add(sortedValues[1].Trim(), int.Parse(sortedValues[3].Trim()));
+                    partyList[partyNum].getWordProbabilities.Add(sortedValues[1].Trim(), double.Parse(sortedValues[5].Trim()));
+                }
+            }
+            /*foreach(Party p in partyList)
+            {
+                foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
+                {
+                    Console.WriteLine("Word: " + kvp.Key + ", Frequency: " + kvp.Value + ", Probability: " + p.getWordProbabilities[kvp.Key]);
+                }
+            }
+            Console.ReadLine();*/
         }
     }
 }

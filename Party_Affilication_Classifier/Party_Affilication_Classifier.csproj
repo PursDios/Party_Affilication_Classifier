@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AIConsult.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Party.cs" />
     <Compile Include="Program.cs" />

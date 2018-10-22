@@ -75,15 +75,15 @@ namespace Party_Affilication_Classifier
                     foreach(string s in splitWords)
                     {
                         //checks if the word is in the wordlist currently.
-                        if(p.getWordFreq.ContainsKey(str))
+                        if(p.getWordFreq.ContainsKey(s))
                         {
                             //finds the word and adds one to the frequency of the word
-                            p.getWordFreq[str]++;
+                            p.getWordFreq[s]++;
                         }
                         else
                         {
                             //if the word is not in the word list adds the word to the word list with a frequency of 1.
-                            p.getWordFreq.Add(str, 1);
+                            p.getWordFreq.Add(s, 1);
                         }
                     }
                 }
@@ -105,19 +105,19 @@ namespace Party_Affilication_Classifier
                 foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
                 {
                     p.getWordProbabilities.Add(kvp.Key,(double)(kvp.Value + 1) / (p.getWordFreq.Count() + totalWords));
-                    //output to a file at some point.
                 }
             }
+            Console.Clear();
             StreamWriter sr = new StreamWriter("WordProbability.txt");
 
             foreach(Party p in partyList)
             {
-                sr.WriteLine("-----" + p.getName + "-----");
-                foreach(KeyValuePair<string,double> kvp in p.getWordProbabilities)
+                sr.WriteLine(p.getName.ToUpper());
+                sr.Flush();
+                foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
                 {
-                    sr.WriteLine("Word: " + kvp.Key + ", Frequency: " + p.getWordFreq[kvp.Key] + " Probability: " + kvp.Value);
+                    sr.WriteLine("Word: " + kvp.Key + ", Frequency: " + kvp.Value + ", Probability: " + p.getWordProbabilities[kvp.Key]);
                 }
-                sr.WriteLine("\n\n\n\n");
             }
         }
         /// <summary>
