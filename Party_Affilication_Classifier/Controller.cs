@@ -105,6 +105,7 @@ namespace Party_Affilication_Classifier
             FileInfo consultFile;
 
             consultFile = AI.SelectFile();
+            AI.CalculateParty(partyList);
         }
         /// <summary>
         /// Loads previously saved training data.
@@ -122,7 +123,8 @@ namespace Party_Affilication_Classifier
                 if(allCategories.Any(x => x.ToString().ToUpper() == str))
                 {
                     str.ToLower();
-                    partyList.Add(new Party(char.ToUpper(str[0]) + str.Substring(1)));
+                    str = char.ToUpper(str[0]) + str.Substring(1);
+                    partyList.Add(new Party(str));
                     partyNum++;
                 }
                 //if the string isn't blank.

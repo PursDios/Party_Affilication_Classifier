@@ -28,5 +28,24 @@ namespace Party_Affilication_Classifier
             Console.ReadLine();
             return consultFile;
         }
+        public void CalculateParty(List<Party> partyList)
+        {
+            Dictionary<string, double> calculatedParty = new Dictionary<string, double>();
+            /*
+             * P(cata/doc) = P(word1/cata) x P(word2/cata) x …P(wordi/cata) x P(cata)
+             * P(catb/doc) = P(word1/catb) x P(word2/catb) x …P(wordi/catb) x P(catb)
+             * 
+             * for each word divide by the number of words in the party and then at the end times by the number of words in the document.
+             */
+             foreach(Party p in partyList)
+            {
+                foreach(KeyValuePair<string, int> kvp in p.getWordFreq)
+                {
+                    //calculation?
+                    
+                }
+            }
+
+        }
     }
 }

@@ -142,6 +142,26 @@ namespace Party_Affilication_Classifier
                 }
             }
             s = new string(chars);
+
+            //remove stopwords
+            StreamReader sr = new StreamReader("stopwords.txt");
+            string read = sr.ReadToEnd();
+            List<string> documentWords = s.Split(' ').ToArray().ToList();
+            List<string> stopWords = read.Split(' ').ToArray().ToList();
+            foreach(string word in stopWords)
+            {
+                for (int i = 0; i < documentWords.Count(); i++)
+                {
+                    if (word == documentWords[i])
+                    {
+                        documentWords[i] = "";
+                    }
+                }
+            }
+            foreach(string final in documentWords)
+            {
+                s = s + " " + final;
+            }
             return s;
         }
     }
