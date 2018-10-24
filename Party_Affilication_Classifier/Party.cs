@@ -17,6 +17,8 @@ namespace Party_Affilication_Classifier
         public List<FileInfo> getSpeechList { get { return m_speechList; } set { m_speechList = value; } }
         private Dictionary<string,double> m_WordProbabilities;
         public Dictionary<string,double> getWordProbabilities { get { return m_WordProbabilities; } set { m_WordProbabilities = value; } }
+        private double m_Proability;
+        public double getProbability { get { return m_Proability; } set { m_Proability = value; } }
 
         public Party(string partyName)
         {

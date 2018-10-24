@@ -88,12 +88,15 @@ namespace Party_Affilication_Classifier
             AI.sortFiles(files, partyList);
             AI.TrainingWords(partyList);
             AI.getWordProbability(partyList);
+
+            Consult();
         }
         /// <summary>
         /// Method used to determine the party affilication of a given file.
         /// </summary>
         private void Consult()
         {
+            StreamReader sr;
             //ADD VALIDATION TO CHECK TRAINING HAS BEEN DONE HERE.
             if(partyList.Count() == 0)
             {
@@ -104,14 +107,27 @@ namespace Party_Affilication_Classifier
             AIConsult AI = new AIConsult();
             FileInfo consultFile;
 
-            consultFile = AI.SelectFile();
-            AI.CalculateParty(partyList);
+            try
+            {
+                consultFile = AI.SelectFile();
+                sr = new StreamReader(consultFile.Name);
+                string fileContent = removeGrammar(sr.ReadToEnd());
+                AI.CalculateParty(partyList, fileContent);
+            }
+            catch(Exception e)
+            {
+                //This shouldn't happen...But it's here just incase.
+                Console.WriteLine("Oops. Something went wrong!\n\n");
+                Console.WriteLine(e);
+                Console.ReadLine();
+            }
         }
         /// <summary>
         /// Loads previously saved training data.
         /// </summary>
         private void LoadPriorTraining()
         {
+            //ALL OF THIS WILL NEED TO BE REPLACED WITH SERIALIZATION DUE TO COMPLICATIONS WITH PCATA AND USING THE DATA TO CONSULT MOST OF THE CALCULATED VALUES WILL BE MISSING IF DATA IS NOT SERIALIZED.
             StreamReader sr = new StreamReader("WordProbability.txt");
             int numOfLines = File.ReadAllLines("WordProbability.txt").Length;
             int partyNum = -1;
@@ -120,10 +136,8 @@ namespace Party_Affilication_Classifier
             {
                 string str = sr.ReadLine();
                 //if the word is a party name
-                if(allCategories.Any(x => x.ToString().ToUpper() == str))
+                if(allCategories.Any(x => x.ToString() == str))
                 {
-                    str.ToLower();
-                    str = char.ToUpper(str[0]) + str.Substring(1);
                     partyList.Add(new Party(str));
                     partyNum++;
                 }
@@ -151,14 +165,50 @@ namespace Party_Affilication_Classifier
                     partyList[partyNum].getWordProbabilities.Add(sortedValues[1].Trim(), double.Parse(sortedValues[5].Trim()));
                 }
             }
-            /*foreach(Party p in partyList)
+        }
+        /// <summary>
+        /// removes all forbidden characters or grammar from the given string. This should be done prior to calculations
+        /// </summary>
+        /// <param name="s">string to be filtered.</param>
+        /// <returns></returns>
+        public string removeGrammar(string s)
+        {
+            //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
+            char[] forbiddenChars = { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
+            char[] chars = s.ToCharArray();
+
+            for (int i = 0; i < chars.Count(); i++)
             {
-                foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
+                foreach (char c in forbiddenChars)
                 {
-                    Console.WriteLine("Word: " + kvp.Key + ", Frequency: " + kvp.Value + ", Probability: " + p.getWordProbabilities[kvp.Key]);
+                    if (c == chars[i])
+                    {
+                        chars[i] = ' ';
+                    }
                 }
             }
-            Console.ReadLine();*/
+            s = new string(chars);
+
+            //remove stopwords
+            StreamReader sr = new StreamReader("stopwords.txt");
+            string read = sr.ReadToEnd();
+            List<string> documentWords = s.Split(' ').ToArray().ToList();
+            List<string> stopWords = read.Split(' ').ToArray().ToList();
+            foreach (string word in stopWords)
+            {
+                for (int i = 0; i < documentWords.Count(); i++)
+                {
+                    if (word == documentWords[i])
+                    {
+                        documentWords[i] = "";
+                    }
+                }
+            }
+            foreach (string final in documentWords)
+            {
+                s = s + " " + final;
+            }
+            return s;
         }
     }
 }

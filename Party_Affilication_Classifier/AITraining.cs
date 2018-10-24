@@ -43,6 +43,7 @@ namespace Party_Affilication_Classifier
         /// <param name="partList"></param>
         public void sortFiles(FileInfo[] files, List<Party> partyList)
         {
+            int totalFiles=0;
             foreach(FileInfo f in files)
             {
                 foreach(Party p in partyList)
@@ -53,12 +54,27 @@ namespace Party_Affilication_Classifier
                     }
                 }
             }
+            //get the total number of files.
+            foreach(Party p2 in partyList)
+            {
+                totalFiles = totalFiles + p2.getSpeechList.Count();
+            }
+            //calculate the Pcatagory
+            foreach(Party p3 in partyList)
+            {
+                p3.getProbability = p3.getSpeechList.Count() / totalFiles;
+            }
+        }
+        public void getDocuments()
+        {
+
         }
         /// <summary>
         /// Reads all of he words in each file and assigns them as words used by a particular party.
         /// </summary>
         public void TrainingWords(List<Party> partyList)
         {
+            Controller c = new Controller();
             StreamReader sr;
             //for each party.
             foreach(Party p in partyList)
@@ -69,7 +85,7 @@ namespace Party_Affilication_Classifier
                     //split all the words in the speech
                     sr = new StreamReader(@"TrainingFiles\" + f.Name);
                     string str = sr.ReadToEnd();
-                    str = removeGrammar(str);
+                    str = c.removeGrammar(str);
                     string[] splitWords = str.Split(' ');
                     //for each word in the speech
                     foreach(string s in splitWords)
@@ -112,57 +128,12 @@ namespace Party_Affilication_Classifier
 
             foreach(Party p in partyList)
             {
-                sr.WriteLine(p.getName.ToUpper());
-                sr.Flush();
+                sr.WriteLine(p.getName);
                 foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
                 {
                     sr.WriteLine("Word: " + kvp.Key + ", Frequency: " + kvp.Value + ", Probability: " + p.getWordProbabilities[kvp.Key]);
                 }
             }
-        }
-        /// <summary>
-        /// removes all forbidden characters or grammar from the given string. This should be done prior to calculations
-        /// </summary>
-        /// <param name="s">string to be filtered.</param>
-        /// <returns></returns>
-        private string removeGrammar(string s)
-        {
-            //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
-            char[] forbiddenChars = { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
-            char[] chars = s.ToCharArray();
-
-            for (int i = 0; i < chars.Count(); i++)
-            {
-                foreach (char c in forbiddenChars)
-                {
-                    if (c == chars[i])
-                    {
-                        chars[i] = ' ';
-                    }
-                }
-            }
-            s = new string(chars);
-
-            //remove stopwords
-            StreamReader sr = new StreamReader("stopwords.txt");
-            string read = sr.ReadToEnd();
-            List<string> documentWords = s.Split(' ').ToArray().ToList();
-            List<string> stopWords = read.Split(' ').ToArray().ToList();
-            foreach(string word in stopWords)
-            {
-                for (int i = 0; i < documentWords.Count(); i++)
-                {
-                    if (word == documentWords[i])
-                    {
-                        documentWords[i] = "";
-                    }
-                }
-            }
-            foreach(string final in documentWords)
-            {
-                s = s + " " + final;
-            }
-            return s;
         }
     }
 }
