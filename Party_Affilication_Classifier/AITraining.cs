@@ -74,7 +74,7 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void TrainingWords(List<Party> partyList)
         {
-            Controller c = new Controller();
+            Filter fil = new Filter();
             StreamReader sr;
             //for each party.
             foreach(Party p in partyList)
@@ -85,7 +85,7 @@ namespace Party_Affilication_Classifier
                     //split all the words in the speech
                     sr = new StreamReader(@"TrainingFiles\" + f.Name);
                     string str = sr.ReadToEnd();
-                    str = c.removeGrammar(str);
+                    str = fil.removeStopwords(fil.removeGrammar(str));
                     string[] splitWords = str.Split(' ');
                     //for each word in the speech
                     foreach(string s in splitWords)

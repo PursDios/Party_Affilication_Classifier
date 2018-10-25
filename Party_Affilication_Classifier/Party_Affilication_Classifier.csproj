@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AIConsult.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="Filter.cs" />
     <Compile Include="Party.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

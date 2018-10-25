@@ -96,6 +96,7 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private void Consult()
         {
+            Filter f = new Filter();
             StreamReader sr;
             //ADD VALIDATION TO CHECK TRAINING HAS BEEN DONE HERE.
             if(partyList.Count() == 0)
@@ -110,8 +111,8 @@ namespace Party_Affilication_Classifier
             try
             {
                 consultFile = AI.SelectFile();
-                sr = new StreamReader(consultFile.Name);
-                string fileContent = removeGrammar(sr.ReadToEnd());
+                sr = new StreamReader(@"TestFiles\" + consultFile.Name);
+                string fileContent = f.removeStopwords(f.removeGrammar(sr.ReadToEnd()));
                 AI.CalculateParty(partyList, fileContent);
             }
             catch(Exception e)
@@ -165,50 +166,6 @@ namespace Party_Affilication_Classifier
                     partyList[partyNum].getWordProbabilities.Add(sortedValues[1].Trim(), double.Parse(sortedValues[5].Trim()));
                 }
             }
-        }
-        /// <summary>
-        /// removes all forbidden characters or grammar from the given string. This should be done prior to calculations
-        /// </summary>
-        /// <param name="s">string to be filtered.</param>
-        /// <returns></returns>
-        public string removeGrammar(string s)
-        {
-            //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
-            char[] forbiddenChars = { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
-            char[] chars = s.ToCharArray();
-
-            for (int i = 0; i < chars.Count(); i++)
-            {
-                foreach (char c in forbiddenChars)
-                {
-                    if (c == chars[i])
-                    {
-                        chars[i] = ' ';
-                    }
-                }
-            }
-            s = new string(chars);
-
-            //remove stopwords
-            StreamReader sr = new StreamReader("stopwords.txt");
-            string read = sr.ReadToEnd();
-            List<string> documentWords = s.Split(' ').ToArray().ToList();
-            List<string> stopWords = read.Split(' ').ToArray().ToList();
-            foreach (string word in stopWords)
-            {
-                for (int i = 0; i < documentWords.Count(); i++)
-                {
-                    if (word == documentWords[i])
-                    {
-                        documentWords[i] = "";
-                    }
-                }
-            }
-            foreach (string final in documentWords)
-            {
-                s = s + " " + final;
-            }
-            return s;
         }
     }
 }

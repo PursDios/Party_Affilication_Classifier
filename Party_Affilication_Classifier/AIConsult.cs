@@ -60,17 +60,12 @@ namespace Party_Affilication_Classifier
              * P(cata/doc) = P(word1/cata) x P(word2/cata) x …P(wordi/cata) x P(cata)
              * P(catb/doc) = P(word1/catb) x P(word2/catb) x …P(wordi/catb) x P(catb)
              * 
-             * Julia: for each word divide by the number of words in the party and then at the end times by the number of words in the document.
-             * 
-             * Aidan: 
-             * 
              * P(word1/cata) is something you have already worked out. You just need to times the probability of each of the words together then times it by P(cata) which you will need to
              * calculate and save. This is NOT the number of documents for that catagory it is the number of catagories divided by the total number of documents it will be a decimal.
              * 
              * Do this for all catagories and you will know which one of the catagories it is likely to be.
              */
             //removes the grammar and stop words from the document.
-
             double probability=0;
             foreach(string s in fileWords)
             {
@@ -94,7 +89,6 @@ namespace Party_Affilication_Classifier
                     p.getProbability = probability * p.getProbability;
                 }
             }
-            double highestValue=0;
             foreach(Party p in partyList)
             {
                 Console.WriteLine("Party Name: " + p.getName + " Probability: " + p.getProbability);
