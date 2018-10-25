@@ -75,7 +75,8 @@ namespace Party_Affilication_Classifier
                     {
                         if(s == kvp.Key)
                         {
-                            commonWords.Add(s,kvp.Value);
+                            if(!commonWords.Any(x => x.ToString() == s))
+                                commonWords.Add(s,kvp.Value);
                         }
                     }
                     foreach(KeyValuePair<string,double> kvp2 in commonWords)
@@ -86,11 +87,12 @@ namespace Party_Affilication_Classifier
                             probability = probability * kvp2.Value;
                     }
                     //probability * p.documentCount / totalDocs
-                    p.getProbability = probability * p.getProbability;
+                    commonWords.Clear();
                 }
             }
-            foreach(Party p in partyList)
+            foreach (Party p in partyList)
             {
+                p.getProbability = (double)probability * p.getProbability;
                 Console.WriteLine("Party Name: " + p.getName + " Probability: " + p.getProbability);
             }
             Console.ReadLine();

@@ -9,31 +9,28 @@ namespace Party_Affilication_Classifier
 {
     public class Party
     {
-        private string m_Name;
-        public string getName { get { return m_Name; } }
-        private Dictionary<string, int> m_Words;
-        public Dictionary<string, int> getWordFreq { get { return m_Words; } set { m_Words = value; } }
-        private List<FileInfo> m_speechList;
+        private string m_Name="";
+        public string getName { get { return m_Name; } set { m_Name = value; } }
+
+        private Dictionary<string, int> m_Words = new Dictionary<string, int>();
+        public Dictionary<string, int> getWordFreq { get { return m_Words; } set { getWordFreq = value; } }
+
+        private List<FileInfo> m_speechList = new List<FileInfo>();
         public List<FileInfo> getSpeechList { get { return m_speechList; } set { m_speechList = value; } }
-        private Dictionary<string,double> m_WordProbabilities;
-        public Dictionary<string,double> getWordProbabilities { get { return m_WordProbabilities; } set { m_WordProbabilities = value; } }
-        private double m_Proability;
+
+        private Dictionary<string,double> m_WordProbabilities = new Dictionary<string, double>();
+        public Dictionary<string, double> getWordProbabilities { get { return m_WordProbabilities; } set { m_WordProbabilities = value; } }
+
+        private double m_Proability=0;
         public double getProbability { get { return m_Proability; } set { m_Proability = value; } }
 
         public Party(string partyName)
         {
-            m_speechList = new List<FileInfo>();
-            m_Words = new Dictionary<string, int>();
-            m_WordProbabilities = new Dictionary<string,double>();
             m_Name = partyName;
         }
         public Party()
         {
             //needed for serializer.
-        }
-        private void removeSpeechGrammar()
-        {
-            //remove all special characters from speeches { '"', ':', ';', '\n', '\t', '.', ',', '\r' }
         }
     }
 }

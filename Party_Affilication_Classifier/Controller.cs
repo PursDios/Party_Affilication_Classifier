@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
 {
@@ -88,6 +89,7 @@ namespace Party_Affilication_Classifier
             AI.sortFiles(files, partyList);
             AI.TrainingWords(partyList);
             AI.getWordProbability(partyList);
+            AI.SaveTraining(partyList);
 
             Consult();
         }
@@ -99,7 +101,7 @@ namespace Party_Affilication_Classifier
             Filter f = new Filter();
             StreamReader sr;
             //ADD VALIDATION TO CHECK TRAINING HAS BEEN DONE HERE.
-            if(partyList.Count() == 0)
+                if(partyList.Count() == 0)
             {
                 Console.WriteLine("No training has been performed during this run. \nLoading prior training...");
                 LoadPriorTraining();
@@ -107,27 +109,22 @@ namespace Party_Affilication_Classifier
 
             AIConsult AI = new AIConsult();
             FileInfo consultFile;
-
-            try
-            {
-                consultFile = AI.SelectFile();
-                sr = new StreamReader(@"TestFiles\" + consultFile.Name);
-                string fileContent = f.removeStopwords(f.removeGrammar(sr.ReadToEnd()));
-                AI.CalculateParty(partyList, fileContent);
-            }
-            catch(Exception e)
-            {
-                //This shouldn't happen...But it's here just incase.
-                Console.WriteLine("Oops. Something went wrong!\n\n");
-                Console.WriteLine(e);
-                Console.ReadLine();
-            }
+            consultFile = AI.SelectFile();
+            sr = new StreamReader(@"TestFiles\" + consultFile.Name);
+            string fileContent = f.RemoveAll(sr.ReadToEnd());
+            AI.CalculateParty(partyList, fileContent);
         }
         /// <summary>
         /// Loads previously saved training data.
         /// </summary>
         private void LoadPriorTraining()
         {
+            DirectoryInfo d = new DirectoryInfo("TrainingData");
+            FileInfo[] files = d.GetFiles("*.txt");
+            XmlSerializer xml = new XmlSerializer(typeof(Party));
+            //xml.Deserialize();
+
+            /*
             //ALL OF THIS WILL NEED TO BE REPLACED WITH SERIALIZATION DUE TO COMPLICATIONS WITH PCATA AND USING THE DATA TO CONSULT MOST OF THE CALCULATED VALUES WILL BE MISSING IF DATA IS NOT SERIALIZED.
             StreamReader sr = new StreamReader("WordProbability.txt");
             int numOfLines = File.ReadAllLines("WordProbability.txt").Length;
@@ -162,10 +159,10 @@ namespace Party_Affilication_Classifier
                         }
                     }
                     //Populates the word frequency and word probability dictionaries with the relevent information from the text document. 
-                    partyList[partyNum].getWordFreq.Add(sortedValues[1].Trim(), int.Parse(sortedValues[3].Trim()));
-                    partyList[partyNum].getWordProbabilities.Add(sortedValues[1].Trim(), double.Parse(sortedValues[5].Trim()));
+                    partyList[partyNum].getWordFreq().Add(sortedValues[1].Trim(), int.Parse(sortedValues[3].Trim()));
+                    partyList[partyNum].getWordProbabilities().Add(sortedValues[1].Trim(), double.Parse(sortedValues[5].Trim()));
                 }
-            }
+            }*/
         }
     }
 }

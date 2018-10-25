@@ -10,6 +10,10 @@ namespace Party_Affilication_Classifier
 {
     public class Filter
     {
+        public string RemoveAll(string s)
+        {
+            return removeStopwords(removeGrammar(s));
+        }
         public string removeGrammar(string s)
         {
             //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
@@ -61,7 +65,6 @@ namespace Party_Affilication_Classifier
             s = (string.Join(" ", finalList));
             Regex trimmer = new Regex(@"\s\s+");
             s = trimmer.Replace(s, " ");
-            Console.WriteLine(s);
             return s;
         }
     }

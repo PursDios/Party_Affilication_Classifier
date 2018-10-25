@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
 {
@@ -62,12 +64,8 @@ namespace Party_Affilication_Classifier
             //calculate the Pcatagory
             foreach(Party p3 in partyList)
             {
-                p3.getProbability = p3.getSpeechList.Count() / totalFiles;
+                p3.getProbability = ((double)p3.getSpeechList.Count() / totalFiles);
             }
-        }
-        public void getDocuments()
-        {
-
         }
         /// <summary>
         /// Reads all of he words in each file and assigns them as words used by a particular party.
@@ -85,7 +83,7 @@ namespace Party_Affilication_Classifier
                     //split all the words in the speech
                     sr = new StreamReader(@"TrainingFiles\" + f.Name);
                     string str = sr.ReadToEnd();
-                    str = fil.removeStopwords(fil.removeGrammar(str));
+                    str = fil.RemoveAll(str);
                     string[] splitWords = str.Split(' ');
                     //for each word in the speech
                     foreach(string s in splitWords)
@@ -117,22 +115,37 @@ namespace Party_Affilication_Classifier
             }
             foreach(Party p in partyList)
             {
-                Console.WriteLine("--- " + p.getName + "---");
+                Console.WriteLine("" + p.getName + "");
                 foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
                 {
                     p.getWordProbabilities.Add(kvp.Key,(double)(kvp.Value + 1) / (p.getWordFreq.Count() + totalWords));
                 }
             }
             Console.Clear();
+            
+        }
+        public void SaveTraining(List<Party> partyList)
+        {
             StreamWriter sr = new StreamWriter("WordProbability.txt");
-
-            foreach(Party p in partyList)
+            foreach (Party p in partyList)
             {
                 sr.WriteLine(p.getName);
-                foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
+                foreach (KeyValuePair<string, int> kvp in p.getWordFreq)
                 {
                     sr.WriteLine("Word: " + kvp.Key + ", Frequency: " + kvp.Value + ", Probability: " + p.getWordProbabilities[kvp.Key]);
                 }
+            }
+
+            XmlSerializer xml = new XmlSerializer(typeof(Party));
+            int i = 0;
+            XmlWriter xmlw;
+            foreach (Party p in partyList)
+            {
+                Party party = p;
+                xmlw = new XmlTextWriter(@"TrainingData\Party" + i + ".xml", Encoding.UTF8);
+                xml.Serialize(xmlw, party);
+                i++;
+                xmlw.Close();
             }
         }
     }
