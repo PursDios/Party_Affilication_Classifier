@@ -12,17 +12,14 @@ namespace Party_Affilication_Classifier
         private string m_Name="";
         public string getName { get { return m_Name; } set { m_Name = value; } }
 
-        private Dictionary<string, int> m_Words = new Dictionary<string, int>();
-        public Dictionary<string, int> getWordFreq { get { return m_Words; } set { getWordFreq = value; } }
-
-        private List<FileInfo> m_speechList = new List<FileInfo>();
-        public List<FileInfo> getSpeechList { get { return m_speechList; } set { m_speechList = value; } }
-
-        private Dictionary<string,double> m_WordProbabilities = new Dictionary<string, double>();
-        public Dictionary<string, double> getWordProbabilities { get { return m_WordProbabilities; } set { m_WordProbabilities = value; } }
+        private List<FileInfo> m_SpeechList = new List<FileInfo>();
+        public List<FileInfo> getSpeechList { get { return m_SpeechList; } set { m_SpeechList = value; } }
 
         private double m_Proability=0;
         public double getProbability { get { return m_Proability; } set { m_Proability = value; } }
+
+        private List<Word> m_WordList = new List<Word>();
+        public List<Word> getWordList { get { return m_WordList; } set { m_WordList = value; } }
 
         public Party(string partyName)
         {

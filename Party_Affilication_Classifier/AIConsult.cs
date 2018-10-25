@@ -71,12 +71,12 @@ namespace Party_Affilication_Classifier
             {
                 foreach(Party p in partyList)
                 {
-                    foreach(KeyValuePair<string,double> kvp in p.getWordProbabilities)
+                    foreach(Word kvp in p.getWordList)
                     {
-                        if(s == kvp.Key)
+                        if(s == kvp.getWord)
                         {
                             if(!commonWords.Any(x => x.ToString() == s))
-                                commonWords.Add(s,kvp.Value);
+                                commonWords.Add(s,kvp.getProbability);
                         }
                     }
                     foreach(KeyValuePair<string,double> kvp2 in commonWords)

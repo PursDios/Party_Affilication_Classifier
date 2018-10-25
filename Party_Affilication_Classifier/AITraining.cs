@@ -86,18 +86,21 @@ namespace Party_Affilication_Classifier
                     str = fil.RemoveAll(str);
                     string[] splitWords = str.Split(' ');
                     //for each word in the speech
-                    foreach(string s in splitWords)
+                    for (int i = 0; i < splitWords.Count(); i++)
                     {
+                        if (p.getWordList.Count() == 0)
+                            p.getWordList.Add(new Word(splitWords[i], 1, 0));
+
                         //checks if the word is in the wordlist currently.
-                        if(p.getWordFreq.ContainsKey(s))
+                        if(p.getWordList.Any(x => x.ToString() == splitWords[i]))
                         {
                             //finds the word and adds one to the frequency of the word
-                            p.getWordFreq[s]++;
+                            p.getWordList[i].getFreq++;
                         }
                         else
                         {
                             //if the word is not in the word list adds the word to the word list with a frequency of 1.
-                            p.getWordFreq.Add(s, 1);
+                            p.getWordList.Add(new Word(splitWords[i], 1, 0));
                         }
                     }
                 }
@@ -111,28 +114,32 @@ namespace Party_Affilication_Classifier
             double totalWords=0;
             foreach(Party p in partyList)
             {
-                totalWords = totalWords + p.getWordFreq.Count();
+                totalWords = totalWords + p.getWordList.Count();
             }
             foreach(Party p in partyList)
             {
                 Console.WriteLine("" + p.getName + "");
-                foreach(KeyValuePair<string,int> kvp in p.getWordFreq)
+                foreach(Word kvp in p.getWordList)
                 {
-                    p.getWordProbabilities.Add(kvp.Key,(double)(kvp.Value + 1) / (p.getWordFreq.Count() + totalWords));
+                    kvp.getProbability = ((double)(kvp.getProbability + 1) / (p.getWordList.Count() + totalWords));
                 }
             }
             Console.Clear();
             
         }
+        /// <summary>
+        /// Saves the current word probabilities and frequencies.
+        /// </summary>
+        /// <param name="partyList"></param>
         public void SaveTraining(List<Party> partyList)
         {
             StreamWriter sr = new StreamWriter("WordProbability.txt");
             foreach (Party p in partyList)
             {
                 sr.WriteLine(p.getName);
-                foreach (KeyValuePair<string, int> kvp in p.getWordFreq)
+                foreach (Word kvp in p.getWordList)
                 {
-                    sr.WriteLine("Word: " + kvp.Key + ", Frequency: " + kvp.Value + ", Probability: " + p.getWordProbabilities[kvp.Key]);
+                    sr.WriteLine("Word: " + kvp.getWord + ", Frequency: " + kvp.getFreq + ", Probability: " + p.getProbability);
                 }
             }
 
