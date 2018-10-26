@@ -54,7 +54,7 @@ namespace Party_Affilication_Classifier
             Dictionary<string, double> calculatedParty = new Dictionary<string, double>();
             List<string> fileWords = new List<string>();
             Dictionary<string,double> commonWords = new Dictionary<string, double>();
-
+            fileContent.ToLower();
             fileWords = fileContent.Split(' ').ToArray().ToList();
             /*
              * P(cata/doc) = P(word1/cata) x P(word2/cata) x …P(wordi/cata) x P(cata)

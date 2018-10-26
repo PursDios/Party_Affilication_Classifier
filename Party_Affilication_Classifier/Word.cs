@@ -17,7 +17,7 @@ namespace Party_Affilication_Classifier
 
         public Word(string p_Word, int p_Freq, double p_Probability)
         {
-            m_Word = p_Word;
+            m_Word = p_Word.ToLower();
             m_Freq = p_Freq;
             m_Probability = p_Probability;
         }
