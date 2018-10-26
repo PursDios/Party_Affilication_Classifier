@@ -100,8 +100,7 @@ namespace Party_Affilication_Classifier
         {
             Filter f = new Filter();
             StreamReader sr;
-            //ADD VALIDATION TO CHECK TRAINING HAS BEEN DONE HERE.
-                if(partyList.Count() == 0)
+            if(partyList.Count() == 0)
             {
                 Console.WriteLine("No training has been performed during this run. \nLoading prior training...");
                 LoadPriorTraining();
@@ -120,49 +119,13 @@ namespace Party_Affilication_Classifier
         private void LoadPriorTraining()
         {
             DirectoryInfo d = new DirectoryInfo("TrainingData");
-            FileInfo[] files = d.GetFiles("*.txt");
+            FileInfo[] files = d.GetFiles("*.xml");
             XmlSerializer xml = new XmlSerializer(typeof(Party));
-            //xml.Deserialize();
 
-            /*
-            //ALL OF THIS WILL NEED TO BE REPLACED WITH SERIALIZATION DUE TO COMPLICATIONS WITH PCATA AND USING THE DATA TO CONSULT MOST OF THE CALCULATED VALUES WILL BE MISSING IF DATA IS NOT SERIALIZED.
-            StreamReader sr = new StreamReader("WordProbability.txt");
-            int numOfLines = File.ReadAllLines("WordProbability.txt").Length;
-            int partyNum = -1;
-            //for each line in the document.
-            for (int i = 0; i < numOfLines; i++)
+            foreach(FileInfo f in files)
             {
-                string str = sr.ReadLine();
-                //if the word is a party name
-                if(allCategories.Any(x => x.ToString() == str))
-                {
-                    partyList.Add(new Party(str));
-                    partyNum++;
-                }
-                //if the string isn't blank.
-                else if(str != "")
-                {
-                    List<string> stringSplit = new List<string>();
-                    List<string> splitViaColon = new List<string>();
-                    List<string> sortedValues = new List<string>();
-
-                    //split the line into the word, frequency and probability
-                    stringSplit = str.Split(',').ToArray().ToList();
-
-                    foreach(string spl in stringSplit)
-                    {
-                        //splits the Word:, Frequency: and Probability: From the actual content by ensuring that the relevent information is always stored in an odd element number.
-                        splitViaColon = spl.Split(':').ToArray().ToList();
-                        foreach(string s in splitViaColon)
-                        {
-                            sortedValues.Add(s);
-                        }
-                    }
-                    //Populates the word frequency and word probability dictionaries with the relevent information from the text document. 
-                    partyList[partyNum].getWordFreq().Add(sortedValues[1].Trim(), int.Parse(sortedValues[3].Trim()));
-                    partyList[partyNum].getWordProbabilities().Add(sortedValues[1].Trim(), double.Parse(sortedValues[5].Trim()));
-                }
-            }*/
+                //deserialize
+            }
         }
     }
 }

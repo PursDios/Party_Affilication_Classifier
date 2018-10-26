@@ -21,5 +21,9 @@ namespace Party_Affilication_Classifier
             m_Freq = p_Freq;
             m_Probability = p_Probability;
         }
+        public Word()
+        {
+            //Needed for serialization.
+        }
     }
 }

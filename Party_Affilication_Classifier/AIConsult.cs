@@ -67,7 +67,62 @@ namespace Party_Affilication_Classifier
              */
             //removes the grammar and stop words from the document.
             double probability=0;
-            foreach(string s in fileWords)
+            fileWords = fileContent.Split(' ').ToArray().ToList();
+            bool addWord = true;
+            //for each party
+            foreach(Party p in partyList)
+            {
+                //for each word assosiated with that party.
+                foreach(Word w in p.getWordList)
+                {
+                    //if the words are in the party word list and the documents word list
+                    if(fileWords.Any(x => x.ToString() == w.getWord))
+                    {
+                        //check if it's been added before
+                        foreach(KeyValuePair<string,double> kvp in commonWords)
+                        {
+                            if(kvp.Key == w.getWord)
+                            {
+                                addWord = false;
+                            }
+                        }
+                        //if it hasn't add it.
+                        if(addWord)
+                        {
+                            commonWords.Add(w.getWord,w.getProbability);
+                        }
+                            
+                    }
+                    //reset the addword bool.
+                    addWord = true;
+                }
+                //calculate the probability that the document is assosiated with that party.
+                foreach(KeyValuePair<string,double> kvp in commonWords)
+                {
+                    if (probability == 0)
+                        probability = (double)kvp.Value;
+                    else
+                        probability = (double)probability * kvp.Value;
+                }
+                p.getDocumentProbability = probability;
+                probability = 0;
+                commonWords.Clear();
+            }
+            string HighestParty="";
+            double HighestValue=0;
+            foreach(Party p in partyList)
+            {
+                if (p.getDocumentProbability > HighestValue)
+                {
+                    HighestValue = p.getDocumentProbability;
+                    HighestParty = p.getName;
+                }
+
+                Console.WriteLine("Probability: " + p.getDocumentProbability);
+            }
+            Console.WriteLine("The document is most likely: " + HighestParty);
+            Console.ReadLine();
+            /*foreach (string s in fileWords)
             {
                 foreach(Party p in partyList)
                 {
@@ -95,7 +150,7 @@ namespace Party_Affilication_Classifier
                 p.getProbability = (double)probability * p.getProbability;
                 Console.WriteLine("Party Name: " + p.getName + " Probability: " + p.getProbability);
             }
-            Console.ReadLine();
+            Console.ReadLine();*/
         }
     }
 }

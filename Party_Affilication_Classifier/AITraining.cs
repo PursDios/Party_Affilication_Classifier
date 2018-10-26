@@ -45,6 +45,7 @@ namespace Party_Affilication_Classifier
         /// <param name="partList"></param>
         public void sortFiles(FileInfo[] files, List<Party> partyList)
         {
+            StreamReader sr;
             int totalFiles=0;
             foreach(FileInfo f in files)
             {
@@ -52,7 +53,10 @@ namespace Party_Affilication_Classifier
                 {
                     if(f.Name.Contains(p.getName))
                     {
-                        p.getSpeechList.Add(f);
+                        sr = new StreamReader(@"TrainingFiles\" + f.Name);
+                        string content = sr.ReadToEnd();
+                        p.getSpeechList.Add(new Speech(f.Name, content));
+                        sr.Close();
                     }
                 }
             }
@@ -78,10 +82,10 @@ namespace Party_Affilication_Classifier
             foreach(Party p in partyList)
             {
                 //for each speech assosiated with the party
-                foreach(FileInfo f in p.getSpeechList)
+                foreach(Speech f in p.getSpeechList)
                 {
                     //split all the words in the speech
-                    sr = new StreamReader(@"TrainingFiles\" + f.Name);
+                    sr = new StreamReader(@"TrainingFiles\" + f.getName);
                     string str = sr.ReadToEnd();
                     str = fil.RemoveAll(str);
                     string[] splitWords = str.Split(' ');

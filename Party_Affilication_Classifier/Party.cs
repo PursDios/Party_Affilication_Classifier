@@ -12,8 +12,11 @@ namespace Party_Affilication_Classifier
         private string m_Name="";
         public string getName { get { return m_Name; } set { m_Name = value; } }
 
-        private List<FileInfo> m_SpeechList = new List<FileInfo>();
-        public List<FileInfo> getSpeechList { get { return m_SpeechList; } set { m_SpeechList = value; } }
+        private List<Speech> m_SpeechList = new List<Speech>();
+        public List<Speech> getSpeechList { get { return m_SpeechList; } set { m_SpeechList = value; } }
+
+        private double m_DocumentProbability = 0;
+        public double getDocumentProbability { get { return m_DocumentProbability; } set { m_DocumentProbability = value; } }
 
         private double m_Proability=0;
         public double getProbability { get { return m_Proability; } set { m_Proability = value; } }
