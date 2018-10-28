@@ -31,7 +31,6 @@ namespace Party_Affilication_Classifier
                 }
             }
             return (new string(chars));
-            
         }
         public string removeStopwords(string s)
         {

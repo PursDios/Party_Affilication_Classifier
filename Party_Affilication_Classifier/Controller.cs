@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
@@ -119,12 +120,19 @@ namespace Party_Affilication_Classifier
         private void LoadPriorTraining()
         {
             DirectoryInfo d = new DirectoryInfo("TrainingData");
+            Stream stream;
             FileInfo[] files = d.GetFiles("*.xml");
             XmlSerializer xml = new XmlSerializer(typeof(Party));
+            XmlReader xmlRead;
 
-            foreach(FileInfo f in files)
+            for (int i = 0; i < files.Count(); i++)
             {
                 //deserialize
+                stream = new FileStream(@"TrainingData\Party" + i + ".xml", FileMode.Open);
+                xmlRead = new XmlTextReader(stream);
+                partyList.Add((Party)xml.Deserialize(xmlRead));
+                stream.Close();
+                xmlRead.Close();
             }
         }
     }
