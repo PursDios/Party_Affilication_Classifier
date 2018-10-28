@@ -12,9 +12,9 @@ namespace Party_Affilication_Classifier
     {
         public string RemoveAll(string s)
         {
-            return removeStopwords(removeGrammar(s));
+            return RemoveStopwords(RemoveGrammar(s));
         }
-        public string removeGrammar(string s)
+        public string RemoveGrammar(string s)
         {
             //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
             char[] forbiddenChars = { '"', ':', ';', '\n', '\t', '.', ',', '\r' };
@@ -32,7 +32,7 @@ namespace Party_Affilication_Classifier
             }
             return (new string(chars));
         }
-        public string removeStopwords(string s)
+        public string RemoveStopwords(string s)
         {
             //remove stopwords
             StreamReader sr = new StreamReader("stopwords.txt");
@@ -64,6 +64,46 @@ namespace Party_Affilication_Classifier
             s = (string.Join(" ", finalList));
             Regex trimmer = new Regex(@"\s\s+");
             s = trimmer.Replace(s, " ");
+            
+            LementizeWords(s);
+            return s;
+        }
+        public string LementizeWords(string s)
+        {
+            List<string> wordList = s.Split(' ').ToArray().ToList();
+            List<string> finalList = new List<string>();
+            List<char> charList;
+            s.ToLower();
+
+            foreach(string str in wordList)
+            {
+                charList = str.ToCharArray().ToList();
+
+                if (3 < charList.Count())
+                {
+                    //removes ies
+                    if (charList[charList.Count() - 3] == 'i' && charList[charList.Count() - 2] == 'e' && charList[charList.Count() - 1] == 's')
+                    {
+                        Console.WriteLine("ies");
+                    }
+                    //removes s
+                    else if (charList[charList.Count() - 1] == 's')
+                    {
+                        Console.WriteLine("s");
+                        charList[charList.Count() - 1] = ' ';
+                        finalList.Add(new string (charList.ToArray()));
+                    }
+                    else
+                    {
+                        finalList.Add(new string(charList.ToArray()));
+                    }
+                }
+                else
+                {
+                    finalList.Add(new string(charList.ToArray()));
+                }
+            }
+            
             return s;
         }
     }
