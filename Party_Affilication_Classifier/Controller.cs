@@ -9,6 +9,12 @@ using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
 {
+    /*
+     * TFIDF: for each word check how many documents it comes up in. How many total documents there are. Total words in a document.
+     * SEE TFIDF FORMULA.
+     * 
+     * Ngrams: Look up ngram class formula. (join two words together and compare them with the rest of the documents. (Literally checking for two words instead of 1.)
+     */
     public class Controller
     {
         //All the possible categories of government (E.G labour, conservative etc. This is to allow the program to easily be expanded upon).
@@ -115,7 +121,7 @@ namespace Party_Affilication_Classifier
             AI.CalculateParty(partyList, fileContent);
         }
         /// <summary>
-        /// Loads previously saved training data.
+        /// Loads previously saved training data from the saved xml serialized files in the TrainingData folder.
         /// </summary>
         private void LoadPriorTraining()
         {
