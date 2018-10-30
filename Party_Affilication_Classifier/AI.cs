@@ -324,12 +324,38 @@ namespace Party_Affilication_Classifier
         /// <summary>
         /// Calculates the probability that each of the files is associated with each of the parties
         /// </summary>
-        private void CalculatePartyTFIDF()
+        public void CalculatePartyTFIDF()
         {
+            int TotalDocs=0;
+            Dictionary<string, int> FileWordCount = new Dictionary<string, int>();
+            foreach(Party p in m_PartyList)
+            {
+                TotalDocs = TotalDocs + p.getSpeechList.Count();
+            }
             //total words
             //total num of scripts (in entire program)
             //the number of scripts containing that word.
+            List<string> fileWords = fileContent.Split(' ').ToArray().ToList();
+            bool add = true;
 
+            //gets all of the words and the number of times they have appeared in the document. 
+            foreach(string s in fileWords)
+            {
+                foreach(KeyValuePair<string,int> kvp in FileWordCount)
+                {
+                    if (kvp.Key == s)
+                        add = false;
+                }
+                if (add)
+                    FileWordCount.Add(s, 1);
+                else if(!add)
+                {
+                    FileWordCount[s]++;
+                    add = true;
+                }
+            }
+            //TFIDF FOR EACH WORD. THEN TIMES PROBABILITIES WITH ONE ANOTHER LIKE WITH THE LAST THING YOU DONE. (TIMES THEM TOGETHER THINGY) 
+            Console.ReadLine();
 
 
             //count number of occurences each word has. 

@@ -27,5 +27,10 @@ namespace Party_Affilication_Classifier
         {
             //Needed for serialization.
         }
+
+        public void CalculateTFIDF()
+        {
+            
+        }
     }
 }
