@@ -14,6 +14,8 @@ namespace Party_Affilication_Classifier
         public int getFreq { get { return m_Freq; } set { m_Freq = value; } }
         private double m_Probability;
         public double getProbability { get { return m_Probability; } set { m_Probability = value; } }
+        private double m_TFIDF;
+        public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
 
         public Word(string p_Word, int p_Freq, double p_Probability)
         {

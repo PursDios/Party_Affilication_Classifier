@@ -17,10 +17,8 @@ namespace Party_Affilication_Classifier
      */
     public class Controller
     {
-        //All the possible categories of government (E.G labour, conservative etc. This is to allow the program to easily be expanded upon).
-        List<string> allCategories = new List<string> { "Labour", "Conservative", "Coalition" };
-        List<Party> partyList = new List<Party>();
-
+        bool doneTraining = false;
+        AI AI = new AI();
         /// <summary>
         /// Allows the user to navigate the program
         /// </summary>
@@ -68,63 +66,40 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private void Training()
         {
-            AITraining AI = new AITraining();
-
-            DirectoryInfo d = new DirectoryInfo("TrainingFiles");
-            FileInfo[] files = d.GetFiles("*.txt");
-            Console.WriteLine("Please select which files you'd like to use split up by a comma");
-
-            int i = 0;
-            foreach (FileInfo f in files)
-            {
-                i++;
-                Console.WriteLine(i + ") " + f.Name);
-            }
-            string selection = Console.ReadLine();
-            string[] splitSelection = selection.Split(',');
-
             Console.Clear();
-            Console.WriteLine("You have selected: ");
-            foreach (string s in splitSelection)
-            {
-                Console.WriteLine(files[int.Parse(s) - 1].Name);
-            }
-            Console.ReadLine();
-            Console.Clear();
+            AI.SelectFile(true);
+            AI.GetCategories();
+            AI.sortFiles();
+            AI.TrainingWords();
+            AI.getWordProbability();
+            AI.SaveTraining();
 
-            partyList = AI.GetCategories(files, allCategories);
-            AI.sortFiles(files, partyList);
-            AI.TrainingWords(partyList);
-            AI.getWordProbability(partyList);
-            AI.SaveTraining(partyList);
-
-            Consult();
+            doneTraining = true;
+            Console.WriteLine("Training Complete\nDo you wish to proceed to consultation? Y/N");
+            char choice = char.Parse(Console.ReadLine());
+            if(choice == 'Y' || choice == 'y')
+                Consult();
         }
         /// <summary>
         /// Method used to determine the party affilication of a given file.
         /// </summary>
         private void Consult()
         {
-            Filter f = new Filter();
-            StreamReader sr;
-            if(partyList.Count() == 0)
+            Console.Clear();
+            if(!doneTraining)
             {
                 Console.WriteLine("No training has been performed during this run. \nLoading prior training...");
                 LoadPriorTraining();
             }
-
-            AIConsult AI = new AIConsult();
-            FileInfo consultFile;
-            consultFile = AI.SelectFile();
-            sr = new StreamReader(@"TestFiles\" + consultFile.Name);
-            string fileContent = f.RemoveAll(sr.ReadToEnd());
-            AI.CalculateParty(partyList, fileContent);
+            AI.SelectFile(false);
+            AI.CalculateParty();
         }
         /// <summary>
         /// Loads previously saved training data from the saved xml serialized files in the TrainingData folder.
         /// </summary>
         private void LoadPriorTraining()
         {
+            List<Party> partyList = new List<Party>();
             DirectoryInfo d = new DirectoryInfo("TrainingData");
             Stream stream;
             FileInfo[] files = d.GetFiles("*.xml");
@@ -140,6 +115,7 @@ namespace Party_Affilication_Classifier
                 stream.Close();
                 xmlRead.Close();
             }
+            AI.getPartyList = partyList;
         }
     }
 }

@@ -24,12 +24,6 @@ namespace Party_Affilication_Classifier
         private List<Word> m_WordList = new List<Word>();
         public List<Word> getWordList { get { return m_WordList; } set { m_WordList = value; } }
 
-        private double m_TFIDF;
-        public double getTFIDF { get{ return m_TFIDF; } set { m_TFIDF = value; } }
-
-        private double m_Ngrams;
-        public double getNgrams { get { return m_Ngrams; } set { m_Ngrams = value; } }
-
         public Party(string partyName)
         {
             m_Name = partyName;

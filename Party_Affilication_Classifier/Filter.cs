@@ -89,7 +89,7 @@ namespace Party_Affilication_Classifier
                     //removes s
                     else if (charList[charList.Count() - 1] == 's')
                     {
-                        Console.WriteLine("s");
+                        //Console.WriteLine("s");
                         charList[charList.Count() - 1] = ' ';
                         finalList.Add(new string (charList.ToArray()));
                     }
