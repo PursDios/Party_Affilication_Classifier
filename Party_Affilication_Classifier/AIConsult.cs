@@ -56,15 +56,7 @@ namespace Party_Affilication_Classifier
             Dictionary<string,double> commonWords = new Dictionary<string, double>();
             fileContent.ToLower();
             fileWords = fileContent.Split(' ').ToArray().ToList();
-            /*
-             * P(cata/doc) = P(word1/cata) x P(word2/cata) x …P(wordi/cata) x P(cata)
-             * P(catb/doc) = P(word1/catb) x P(word2/catb) x …P(wordi/catb) x P(catb)
-             * 
-             * P(word1/cata) is something you have already worked out. You just need to times the probability of each of the words together then times it by P(cata) which you will need to
-             * calculate and save. This is NOT the number of documents for that catagory it is the number of catagories divided by the total number of documents it will be a decimal.
-             * 
-             * Do this for all catagories and you will know which one of the catagories it is likely to be.
-             */
+
             //removes the grammar and stop words from the document.
             double probability=0;
             fileWords = fileContent.Split(' ').ToArray().ToList();
@@ -122,35 +114,15 @@ namespace Party_Affilication_Classifier
             }
             Console.WriteLine("The document is most likely: " + HighestParty);
             Console.ReadLine();
-            /*foreach (string s in fileWords)
-            {
-                foreach(Party p in partyList)
-                {
-                    foreach(Word kvp in p.getWordList)
-                    {
-                        if(s == kvp.getWord)
-                        {
-                            if(!commonWords.Any(x => x.ToString() == s))
-                                commonWords.Add(s,kvp.getProbability);
-                        }
-                    }
-                    foreach(KeyValuePair<string,double> kvp2 in commonWords)
-                    {
-                        if (probability == 0)
-                            probability = kvp2.Value;
-                        else
-                            probability = probability * kvp2.Value;
-                    }
-                    //probability * p.documentCount / totalDocs
-                    commonWords.Clear();
-                }
-            }
-            foreach (Party p in partyList)
-            {
-                p.getProbability = (double)probability * p.getProbability;
-                Console.WriteLine("Party Name: " + p.getName + " Probability: " + p.getProbability);
-            }
-            Console.ReadLine();*/
+        }
+        private void CalculatePartyTFIDF(List<Party> partyList, string s)
+        {
+            List<string> wordList = s.Split(' ').ToArray().ToList();
+            //count number of occurences each word has. 
+        }
+        private void CalculatePartyNgrams(List<Party> partyList, string s)
+        {
+
         }
     }
 }
