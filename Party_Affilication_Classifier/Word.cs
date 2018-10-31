@@ -28,9 +28,11 @@ namespace Party_Affilication_Classifier
             //Needed for serialization.
         }
 
-        public void CalculateTFIDF()
+        public void CalculateTFIDF(int DocumentCount, int totalWords, int wordAcrossAllDocs)
         {
-            
+            double TF = getFreq / totalWords;
+            double IDF = Math.Log(totalWords / wordAcrossAllDocs);
+            m_TFIDF = TF * IDF;
         }
     }
 }

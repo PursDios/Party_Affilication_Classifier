@@ -267,6 +267,7 @@ namespace Party_Affilication_Classifier
             double probability = 0;
             fileWords = fileContent.Split(' ').ToArray().ToList();
             bool addWord = true;
+            double totalProb = 0;
             //for each party
             foreach (Party p in m_PartyList)
             {
@@ -298,11 +299,13 @@ namespace Party_Affilication_Classifier
                 foreach (KeyValuePair<string, double> kvp in commonWords)
                 {
                     if (probability == 0)
-                        probability = (double)kvp.Value;
+                        probability = Math.Log((double)kvp.Value);
                     else
-                        probability = (double)probability * kvp.Value;
+                        probability += Math.Log(kvp.Value);
                 }
                 p.getDocumentProbability = probability;
+                totalProb += probability;
+                
                 probability = 0;
                 commonWords.Clear();
             }
@@ -310,13 +313,14 @@ namespace Party_Affilication_Classifier
             double HighestValue = 0;
             foreach (Party p in m_PartyList)
             {
-                if (p.getDocumentProbability > HighestValue)
+                p.PartyPercentage = (p.getDocumentProbability / totalProb)*100;
+                if (p.getDocumentProbability < HighestValue)
                 {
                     HighestValue = p.getDocumentProbability;
                     HighestParty = p.getName;
                 }
 
-                Console.WriteLine("Probability: " + p.getDocumentProbability);
+                Console.WriteLine("Probability of " + p.getName + ": " + p.getDocumentProbability + " with " + p.PartyPercentage + "%");
             }
             Console.WriteLine("The document is most likely: " + HighestParty);
             Console.ReadLine();
@@ -327,7 +331,7 @@ namespace Party_Affilication_Classifier
         public void CalculatePartyTFIDF()
         {
             int TotalDocs=0;
-            Dictionary<string, int> FileWordCount = new Dictionary<string, int>();
+            List<Word> CommonWords = new List<Word>();
             foreach(Party p in m_PartyList)
             {
                 TotalDocs = TotalDocs + p.getSpeechList.Count();
@@ -339,20 +343,42 @@ namespace Party_Affilication_Classifier
             bool add = true;
 
             //gets all of the words and the number of times they have appeared in the document. 
-            foreach(string s in fileWords)
+            for (int i = 0; i < fileWords.Count(); i++)
             {
-                foreach(KeyValuePair<string,int> kvp in FileWordCount)
+                foreach(Word w in CommonWords)
                 {
-                    if (kvp.Key == s)
+                    if (fileWords[i] == w.getWord)
                         add = false;
                 }
                 if (add)
-                    FileWordCount.Add(s, 1);
+                    CommonWords.Add(new Word(fileWords[i],1,0));
                 else if(!add)
                 {
-                    FileWordCount[s]++;
+                    foreach(Word w in CommonWords)
+                    {
+                        if(w.getWord == fileWords[i])
+                        {
+                            w.getFreq++;
+                        }
+                    }
                     add = true;
                 }
+            }
+
+            foreach(Word w in CommonWords)
+            {
+                int TotalDocsCount=0;
+                foreach(Party p in m_PartyList)
+                {
+                    foreach(Word w2 in p.getWordList)
+                    {
+                        if(w.getWord == w2.getWord)
+                        {
+                            TotalDocsCount++;
+                        }
+                    }
+                }
+                w.CalculateTFIDF(TotalDocs, CommonWords.Count(),TotalDocsCount);
             }
             //TFIDF FOR EACH WORD. THEN TIMES PROBABILITIES WITH ONE ANOTHER LIKE WITH THE LAST THING YOU DONE. (TIMES THEM TOGETHER THINGY) 
             Console.ReadLine();
