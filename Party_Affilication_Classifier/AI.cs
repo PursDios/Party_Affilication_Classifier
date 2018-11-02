@@ -16,11 +16,12 @@ namespace Party_Affilication_Classifier
         //The list of parties and all there associated data.
         private List<Party> m_PartyList = new List<Party>();
         public List<Party> getPartyList { set { m_PartyList = value; } }
+        int totalDocs=0;
 
         //The list of files that the user has selected.
         private FileInfo[] files = null;
         //The contents of the file the user is consulting.
-        private string fileContent;
+        List<string> fileContent = new List<string>();
 
         /// <summary>
         /// Allows the user to select the files they want to use for training or the file they wish to consult.
@@ -89,7 +90,7 @@ namespace Party_Affilication_Classifier
                         FileInfo f = files[int.Parse(selection) - 1];
 
                         sr = new StreamReader(@"TestFiles\" + f.Name);
-                        fileContent = sr.ReadToEnd();
+                        fileContent = sr.ReadToEnd().Split(' ', '\n').ToArray().ToList();
                         sr.Close();
                     }
                     catch
@@ -136,7 +137,6 @@ namespace Party_Affilication_Classifier
         public void sortFiles()
         {
             StreamReader sr;
-            int totalFiles = 0;
             foreach (FileInfo f in files)
             {
                 foreach (Party p in m_PartyList)
@@ -153,12 +153,12 @@ namespace Party_Affilication_Classifier
             //get the total number of files.
             foreach (Party p2 in m_PartyList)
             {
-                totalFiles = totalFiles + p2.getSpeechList.Count();
+                totalDocs = totalDocs + p2.getSpeechList.Count();
             }
             //calculate the Pcatagory
             foreach (Party p3 in m_PartyList)
             {
-                p3.getProbability = ((double)p3.getSpeechList.Count() / totalFiles);
+                p3.getProbability = ((double)p3.getSpeechList.Count() / totalDocs);
             }
         }
 
@@ -259,13 +259,16 @@ namespace Party_Affilication_Classifier
         public void CalculateParty()
         {
             Dictionary<string, double> calculatedParty = new Dictionary<string, double>();
-            List<string> fileWords = new List<string>();
             Dictionary<string, double> commonWords = new Dictionary<string, double>();
-            fileWords = fileContent.Split(' ').ToArray().ToList();
+
+            //gets the total number of documents.
+            foreach(Party p in m_PartyList)
+            {
+                totalDocs += p.getSpeechList.Count();
+            }
 
             //removes the grammar and stop words from the document.
             double probability = 0;
-            fileWords = fileContent.Split(' ').ToArray().ToList();
             bool addWord = true;
             //for each party
             foreach (Party p in m_PartyList)
@@ -274,7 +277,7 @@ namespace Party_Affilication_Classifier
                 foreach (Word w in p.getWordList)
                 {
                     //if the words are in the party word list and the documents word list
-                    if (fileWords.Any(x => x.ToString() == w.getWord))
+                    if (fileContent.Any(x => x.ToString() == w.getWord))
                     {
                         //check if it's been added before
                         foreach (KeyValuePair<string, double> kvp in commonWords)
@@ -326,39 +329,58 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void CalculatePartyTFIDF()
         {
-            int TotalDocs=0;
-            Dictionary<string, int> FileWordCount = new Dictionary<string, int>();
+            //contains the word and the number of times it appeared in the document.
+            Dictionary<string, int> tfidfValues = new Dictionary<string, int>();
+            Dictionary<Word, int> WordDocValues = new Dictionary<Word, int>();
+
+            //calculates the number of times that word appears in the document.
+            foreach(string str in fileContent)
+            {
+                if(tfidfValues.ContainsKey(str.ToLower()))
+                {
+                    tfidfValues[str.ToLower()]++;
+                }
+                else
+                {
+                    tfidfValues.Add(str.ToLower(), 1);
+                }
+            }
+            //turns strings into words
+            foreach(KeyValuePair<string,int> kvp in tfidfValues)
+            {
+                WordDocValues.Add(new Word(kvp.Key, kvp.Value, 0),0);
+            }
+            //gets the number of documents a word appears in.
+            bool add = false;
+            Word w;
+            List<string> speechContent = new List<string>();
             foreach(Party p in m_PartyList)
             {
-                TotalDocs = TotalDocs + p.getSpeechList.Count();
-            }
-            //total words
-            //total num of scripts (in entire program)
-            //the number of scripts containing that word.
-            List<string> fileWords = fileContent.Split(' ').ToArray().ToList();
-            bool add = true;
+                foreach(Speech s in p.getSpeechList)
+                {
+                    speechContent = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
 
-            //gets all of the words and the number of times they have appeared in the document. 
-            foreach(string s in fileWords)
+                    for(int i=0;i <WordDocValues.Count();i++)
+                    {
+                        foreach(string str in speechContent)
+                        {
+                            add = true;
+                        }
+                        if(add)
+                        {
+                            w = WordDocValues.ElementAt(i).Key;
+                            WordDocValues[w]++;
+                            add = false;
+                        }
+                    }
+                }
+            }
+            foreach(KeyValuePair<Word,int> kvp in WordDocValues)
             {
-                foreach(KeyValuePair<string,int> kvp in FileWordCount)
-                {
-                    if (kvp.Key == s)
-                        add = false;
-                }
-                if (add)
-                    FileWordCount.Add(s, 1);
-                else if(!add)
-                {
-                    FileWordCount[s]++;
-                    add = true;
-                }
+                kvp.Key.CalculateTFIDF(tfidfValues.Count(), totalDocs, kvp.Value);
+                Console.WriteLine(kvp.Key.getTFIDF);
             }
-            //TFIDF FOR EACH WORD. THEN TIMES PROBABILITIES WITH ONE ANOTHER LIKE WITH THE LAST THING YOU DONE. (TIMES THEM TOGETHER THINGY) 
             Console.ReadLine();
-
-
-            //count number of occurences each word has. 
         }
         private void CalculatePartyNgrams()
         {

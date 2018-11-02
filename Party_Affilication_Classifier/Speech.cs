@@ -16,7 +16,7 @@ namespace Party_Affilication_Classifier
         public Speech(string p_Name, string p_Content)
         {
             m_Name = p_Name;
-            m_Content = p_Name;
+            m_Content = p_Content;
         }
         public Speech()
         {

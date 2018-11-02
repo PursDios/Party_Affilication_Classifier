@@ -10,12 +10,18 @@ namespace Party_Affilication_Classifier
     {
         private string m_Word;
         public string getWord { get { return m_Word; } set { m_Word = value; } }
+
         private int m_Freq;
         public int getFreq { get { return m_Freq; } set { m_Freq = value; } }
+
         private double m_Probability;
         public double getProbability { get { return m_Probability; } set { m_Probability = value; } }
+
         private double m_TFIDF;
         public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
+
+        private double m_NumberOfDocs;
+        public double getNumberOfDocs { get { return m_NumberOfDocs; } set { m_NumberOfDocs = value; } }
 
         public Word(string p_Word, int p_Freq, double p_Probability)
         {
@@ -28,9 +34,11 @@ namespace Party_Affilication_Classifier
             //Needed for serialization.
         }
 
-        public void CalculateTFIDF()
+        public void CalculateTFIDF(int DocWords, int TotalDocs, int DocumentWordCount)
         {
-            
+            double TF = (double)m_Freq / DocWords;
+            double IDF = (double)(TotalDocs / DocumentWordCount);
+            m_TFIDF = Math.Log(TF * IDF);
         }
     }
 }
