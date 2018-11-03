@@ -24,8 +24,8 @@ namespace Party_Affilication_Classifier
         private List<Word> m_WordList = new List<Word>();
         public List<Word> getWordList { get { return m_WordList; } set { m_WordList = value; } }
 
-        private double m_PartyPercentage = 0.0D;
-        public double PartyPercentage { get => m_PartyPercentage; set => m_PartyPercentage = value; }
+        private double m_TFIDF;
+        public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
 
         public Party(string partyName)
         {

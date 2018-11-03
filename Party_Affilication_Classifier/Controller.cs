@@ -94,6 +94,7 @@ namespace Party_Affilication_Classifier
             AI.SelectFile(false);
             AI.CalculateParty();
             AI.CalculatePartyTFIDF();
+            AI.PrintValues();
         }
         /// <summary>
         /// Loads previously saved training data from the saved xml serialized files in the TrainingData folder.

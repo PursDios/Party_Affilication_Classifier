@@ -309,20 +309,6 @@ namespace Party_Affilication_Classifier
                 probability = 0;
                 commonWords.Clear();
             }
-            string HighestParty = "";
-            double HighestValue = 0;
-            foreach (Party p in m_PartyList)
-            {
-                if (p.getDocumentProbability > HighestValue)
-                {
-                    HighestValue = p.getDocumentProbability;
-                    HighestParty = p.getName;
-                }
-
-                Console.WriteLine("Probability: " + p.getDocumentProbability);
-            }
-            Console.WriteLine("The document is most likely: " + HighestParty);
-            Console.ReadLine();
         }
         /// <summary>
         /// Calculates the probability that each of the files is associated with each of the parties
@@ -333,26 +319,24 @@ namespace Party_Affilication_Classifier
             List<string> SpeechWords = new List<string>();
             List<Word> CommonWords = new List<Word>();
             bool add = false;
-            double HighestValue = 0;
-            string HighestParty= "";
             // for each party
             foreach (Party p in m_PartyList)
             {
                 //for each speech
-                foreach(Speech s in p.getSpeechList)
+                foreach (Speech s in p.getSpeechList)
                 {
                     //make a list of words.
                     SpeechWords = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
                     //get the total words amongst all documents assosiated with that party.
                     totalWords += SpeechWords.Count();
                     //for each string in the speech
-                    foreach(string str in SpeechWords)
+                    foreach (string str in SpeechWords)
                     {
                         //for each word in the document being classified.
-                        foreach(string str2 in fileContent)
+                        foreach (string str2 in fileContent)
                         {
                             //if they are in both documents.
-                            if(str2.ToLower() == str.ToLower())
+                            if (str2.ToLower() == str.ToLower())
                             {
                                 add = true;
                             }
@@ -362,9 +346,9 @@ namespace Party_Affilication_Classifier
                         {
                             if (CommonWords.Any(x => x.getWord == str))
                             {
-                                foreach(Word w in CommonWords)
+                                foreach (Word w in CommonWords)
                                 {
-                                    if(w.getWord == str)
+                                    if (w.getWord == str)
                                     {
                                         w.getFreq++;
                                     }
@@ -380,24 +364,48 @@ namespace Party_Affilication_Classifier
                 }
                 foreach (Word word2 in CommonWords)
                 {
-                    word2.CalculateTFIDF(totalWords,p.getSpeechList.Count(),fileContent.Count());
-                    p.getDocumentProbability += word2.getTFIDF;
+                    word2.CalculateTFIDF(totalWords, p.getSpeechList.Count(), fileContent.Count());
+                    p.getTFIDF += word2.getTFIDF;
                 }
-                Console.WriteLine("Using TFIDF: " + p.getName + " " + p.getProbability);
+
                 CommonWords.Clear();
                 totalWords = 0;
+            }
+        }
+        private void CalculatePartyNgrams()
+        {
+            
+        }
+        public void PrintValues()
+        {
+            string HighestParty = "";
+            double HighestValue = 0;
 
-                if(p.getProbability < HighestValue || HighestValue == 0)
+            //Normal Percentages
+            foreach (Party p in m_PartyList)
+            {
+                if (p.getDocumentProbability > HighestValue)
                 {
+                    HighestValue = p.getDocumentProbability;
+                    HighestParty = p.getName;
+                }
+
+                Console.WriteLine("Using Maths: " + p.getName + " " + p.getDocumentProbability);
+            }
+            Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
+
+            //TFIDF Percentages
+            foreach (Party p in m_PartyList)
+            {
+                Console.WriteLine("Using TFIDF: " + p.getName + " " + p.getTFIDF);
+                if (p.getTFIDF < HighestValue || HighestValue == 0)
+                {
+                    HighestValue = p.getTFIDF;
                     HighestParty = p.getName;
                 }
             }
             Console.WriteLine("Using TFIDF The document is most likely: " + HighestParty);
             Console.ReadLine();
-        }
-        private void CalculatePartyNgrams()
-        {
-            
         }
         #endregion
     }
