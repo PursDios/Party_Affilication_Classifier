@@ -36,8 +36,8 @@ namespace Party_Affilication_Classifier
 
         public void CalculateTFIDF(int DocWords, int TotalDocs, int DocumentWordCount)
         {
-            double TF = (double)m_Freq / DocWords;
-            double IDF = (double)(TotalDocs / DocumentWordCount);
+            double TF = (double)getFreq / DocWords;
+            double IDF = (double)TotalDocs / DocumentWordCount;
             m_TFIDF = Math.Log(TF * IDF);
         }
     }

@@ -84,14 +84,14 @@ namespace Party_Affilication_Classifier
                     //removes ies
                     if (charList[charList.Count() - 3] == 'i' && charList[charList.Count() - 2] == 'e' && charList[charList.Count() - 1] == 's')
                     {
-                        Console.WriteLine("ies");
+                        charList[charList.Count() - 3] = ' ';
+                        charList[charList.Count() - 2] = ' ';
+                        charList[charList.Count() - 1] = ' ';
                     }
                     //removes s
                     else if (charList[charList.Count() - 1] == 's')
                     {
-                        //Console.WriteLine("s");
                         charList[charList.Count() - 1] = ' ';
-                        finalList.Add(new string (charList.ToArray()));
                     }
                     else
                     {

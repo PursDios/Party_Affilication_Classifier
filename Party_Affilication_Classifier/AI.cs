@@ -329,67 +329,75 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void CalculatePartyTFIDF()
         {
-            //contains the word and the number of times it appeared in the document.
-            Dictionary<string, int> tfidfValues = new Dictionary<string, int>();
-            Dictionary<Word, int> WordDocValues = new Dictionary<Word, int>();
-
-            //calculates the number of times that word appears in the document.
-            foreach(string str in fileContent)
-            {
-                if(tfidfValues.ContainsKey(str.ToLower()))
-                {
-                    tfidfValues[str.ToLower()]++;
-                }
-                else
-                {
-                    tfidfValues.Add(str.ToLower(), 1);
-                }
-            }
-            //turns strings into words
-            foreach(KeyValuePair<string,int> kvp in tfidfValues)
-            {
-                WordDocValues.Add(new Word(kvp.Key, kvp.Value, 0),0);
-            }
-            //gets the number of documents a word appears in.
+            int totalWords = 0;
+            List<string> SpeechWords = new List<string>();
+            List<Word> CommonWords = new List<Word>();
             bool add = false;
-            Word w;
-            List<string> speechContent = new List<string>();
-            foreach(Party p in m_PartyList)
+            double HighestValue = 0;
+            string HighestParty= "";
+            // for each party
+            foreach (Party p in m_PartyList)
             {
+                //for each speech
                 foreach(Speech s in p.getSpeechList)
                 {
-                    speechContent = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
-
-                    for(int i=0;i <WordDocValues.Count();i++)
+                    //make a list of words.
+                    SpeechWords = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
+                    //get the total words amongst all documents assosiated with that party.
+                    totalWords += SpeechWords.Count();
+                    //for each string in the speech
+                    foreach(string str in SpeechWords)
                     {
-                        foreach(string str in speechContent)
+                        //for each word in the document being classified.
+                        foreach(string str2 in fileContent)
                         {
-                            add = true;
+                            //if they are in both documents.
+                            if(str2.ToLower() == str.ToLower())
+                            {
+                                add = true;
+                            }
                         }
-                        if(add)
+                        //add  the word to the common words
+                        if (add)
                         {
-                            w = WordDocValues.ElementAt(i).Key;
-                            WordDocValues[w]++;
+                            if (CommonWords.Any(x => x.getWord == str))
+                            {
+                                foreach(Word w in CommonWords)
+                                {
+                                    if(w.getWord == str)
+                                    {
+                                        w.getFreq++;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                CommonWords.Add(new Word(str, 1, 0));
+                            }
                             add = false;
                         }
                     }
                 }
+                foreach (Word word2 in CommonWords)
+                {
+                    word2.CalculateTFIDF(totalWords,p.getSpeechList.Count(),fileContent.Count());
+                    p.getDocumentProbability += word2.getTFIDF;
+                }
+                Console.WriteLine("Using TFIDF: " + p.getName + " " + p.getProbability);
+                CommonWords.Clear();
+                totalWords = 0;
+
+                if(p.getProbability < HighestValue || HighestValue == 0)
+                {
+                    HighestParty = p.getName;
+                }
             }
-            foreach(KeyValuePair<Word,int> kvp in WordDocValues)
-            {
-                kvp.Key.CalculateTFIDF(tfidfValues.Count(), totalDocs, kvp.Value);
-                Console.WriteLine(kvp.Key.getTFIDF);
-            }
+            Console.WriteLine("Using TFIDF The document is most likely: " + HighestParty);
             Console.ReadLine();
         }
         private void CalculatePartyNgrams()
         {
-            Dictionary<string, int> NgramsDict = new Dictionary<string, int>();
-
-            foreach (Party p in m_PartyList)
-            {
-
-            }
+            
         }
         #endregion
     }
