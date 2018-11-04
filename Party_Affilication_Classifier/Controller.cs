@@ -9,12 +9,9 @@ using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
 {
-    /*
-     * TFIDF: for each word check how many documents it comes up in. How many total documents there are. Total words in a document.
-     * SEE TFIDF FORMULA.
-     * 
-     * Ngrams: Look up ngram class formula. (join two words together and compare them with the rest of the documents. (Literally checking for two words instead of 1.)
-     */
+    /// <summary>
+    /// Controls the entire program. Everything is called from here.
+    /// </summary>
     public class Controller
     {
         bool doneTraining = false;

@@ -9,6 +9,9 @@ using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
 {
+    /// <summary>
+    /// Contains all of the formula's and Artifical Intelligence aspects of the program.
+    /// </summary>
     class AI
     {
         //All the possible parties
@@ -311,7 +314,7 @@ namespace Party_Affilication_Classifier
             }
         }
         /// <summary>
-        /// Calculates the probability that each of the files is associated with each of the parties
+        /// Calculates the probability that each of the file is associated with each of the parties using TFIDF
         /// </summary>
         public void CalculatePartyTFIDF()
         {
@@ -372,10 +375,16 @@ namespace Party_Affilication_Classifier
                 totalWords = 0;
             }
         }
+        /// <summary>
+        /// Uses Ngrams and TFIDF to calculate the probability that the file is associated with each of the parties
+        /// </summary>
         private void CalculatePartyNgrams()
         {
             
         }
+        /// <summary>
+        /// Prints the probabilities that the file belongs to each of the parties (prints results of CalculateParty, CalculatePartyTFIDF and CalculatePartyNgrams)
+        /// </summary>
         public void PrintValues()
         {
             string HighestParty = "";
@@ -404,7 +413,7 @@ namespace Party_Affilication_Classifier
                     HighestParty = p.getName;
                 }
             }
-            Console.WriteLine("Using TFIDF The document is most likely: " + HighestParty);
+            Console.WriteLine("The document is most likely: " + HighestParty);
             Console.ReadLine();
         }
         #endregion

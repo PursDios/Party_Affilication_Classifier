@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Party_Affilication_Classifier
 {
+    /// <summary>
+    /// Contains the name of the speech and the content in the speech.
+    /// </summary>
     public class Speech
     {
         private string m_Name;
