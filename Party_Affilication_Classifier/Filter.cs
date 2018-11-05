@@ -8,12 +8,25 @@ using System.Text.RegularExpressions;
 
 namespace Party_Affilication_Classifier
 {
+    /// <summary>
+    /// Filters out unwanted content from strings.
+    /// </summary>
     public class Filter
     {
+        /// <summary>
+        /// Removes the grammar, stopwords and lementizes words.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public string RemoveAll(string s)
         {
-            return RemoveStopwords(RemoveGrammar(s));
+            return LementizeWords(RemoveStopwords(RemoveGrammar(s)));
         }
+        /// <summary>
+        /// Removes all of the special characters and words in a string
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public string RemoveGrammar(string s)
         {
             //has to be done character by character otherwise some \n's or \r's won't be filtered out properly. Or two words will blend together.
@@ -65,9 +78,13 @@ namespace Party_Affilication_Classifier
             Regex trimmer = new Regex(@"\s\s+");
             s = trimmer.Replace(s, " ");
             
-            LementizeWords(s);
             return s;
         }
+        /// <summary>
+        /// Lementizes words.
+        /// </summary>
+        /// <param name="s">The string containing the words you want to Lementize</param>
+        /// <returns></returns>
         public string LementizeWords(string s)
         {
             List<string> wordList = s.Split(' ').ToArray().ToList();
@@ -84,14 +101,14 @@ namespace Party_Affilication_Classifier
                     //removes ies
                     if (charList[charList.Count() - 3] == 'i' && charList[charList.Count() - 2] == 'e' && charList[charList.Count() - 1] == 's')
                     {
-                        Console.WriteLine("ies");
+                        charList[charList.Count() - 3] = ' ';
+                        charList[charList.Count() - 2] = ' ';
+                        charList[charList.Count() - 1] = ' ';
                     }
                     //removes s
                     else if (charList[charList.Count() - 1] == 's')
                     {
-                        //Console.WriteLine("s");
                         charList[charList.Count() - 1] = ' ';
-                        finalList.Add(new string (charList.ToArray()));
                     }
                     else
                     {

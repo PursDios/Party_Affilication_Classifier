@@ -9,6 +9,9 @@ using System.Xml.Serialization;
 
 namespace Party_Affilication_Classifier
 {
+    /// <summary>
+    /// Contains all of the formula's and Artifical Intelligence aspects of the program.
+    /// </summary>
     class AI
     {
         //All the possible parties
@@ -16,11 +19,12 @@ namespace Party_Affilication_Classifier
         //The list of parties and all there associated data.
         private List<Party> m_PartyList = new List<Party>();
         public List<Party> getPartyList { set { m_PartyList = value; } }
+        int totalDocs=0;
 
         //The list of files that the user has selected.
         private FileInfo[] files = null;
         //The contents of the file the user is consulting.
-        private string fileContent;
+        List<string> fileContent = new List<string>();
 
         /// <summary>
         /// Allows the user to select the files they want to use for training or the file they wish to consult.
@@ -89,7 +93,7 @@ namespace Party_Affilication_Classifier
                         FileInfo f = files[int.Parse(selection) - 1];
 
                         sr = new StreamReader(@"TestFiles\" + f.Name);
-                        fileContent = sr.ReadToEnd();
+                        fileContent = sr.ReadToEnd().Split(' ', '\n').ToArray().ToList();
                         sr.Close();
                     }
                     catch
@@ -136,7 +140,6 @@ namespace Party_Affilication_Classifier
         public void sortFiles()
         {
             StreamReader sr;
-            int totalFiles = 0;
             foreach (FileInfo f in files)
             {
                 foreach (Party p in m_PartyList)
@@ -153,12 +156,12 @@ namespace Party_Affilication_Classifier
             //get the total number of files.
             foreach (Party p2 in m_PartyList)
             {
-                totalFiles = totalFiles + p2.getSpeechList.Count();
+                totalDocs = totalDocs + p2.getSpeechList.Count();
             }
             //calculate the Pcatagory
             foreach (Party p3 in m_PartyList)
             {
-                p3.getProbability = ((double)p3.getSpeechList.Count() / totalFiles);
+                p3.getProbability = ((double)p3.getSpeechList.Count() / totalDocs);
             }
         }
 
@@ -259,15 +262,17 @@ namespace Party_Affilication_Classifier
         public void CalculateParty()
         {
             Dictionary<string, double> calculatedParty = new Dictionary<string, double>();
-            List<string> fileWords = new List<string>();
             Dictionary<string, double> commonWords = new Dictionary<string, double>();
-            fileWords = fileContent.Split(' ').ToArray().ToList();
+
+            //gets the total number of documents.
+            foreach(Party p in m_PartyList)
+            {
+                totalDocs += p.getSpeechList.Count();
+            }
 
             //removes the grammar and stop words from the document.
             double probability = 0;
-            fileWords = fileContent.Split(' ').ToArray().ToList();
             bool addWord = true;
-            double totalProb = 0;
             //for each party
             foreach (Party p in m_PartyList)
             {
@@ -275,7 +280,7 @@ namespace Party_Affilication_Classifier
                 foreach (Word w in p.getWordList)
                 {
                     //if the words are in the party word list and the documents word list
-                    if (fileWords.Any(x => x.ToString() == w.getWord))
+                    if (fileContent.Any(x => x.ToString() == w.getWord))
                     {
                         //check if it's been added before
                         foreach (KeyValuePair<string, double> kvp in commonWords)
@@ -299,102 +304,117 @@ namespace Party_Affilication_Classifier
                 foreach (KeyValuePair<string, double> kvp in commonWords)
                 {
                     if (probability == 0)
-                        probability = Math.Log((double)kvp.Value);
+                        probability = (double)kvp.Value;
                     else
-                        probability += Math.Log(kvp.Value);
+                        probability = (double)probability * kvp.Value;
                 }
                 p.getDocumentProbability = probability;
-                totalProb += probability;
-                
                 probability = 0;
                 commonWords.Clear();
             }
-            string HighestParty = "";
-            double HighestValue = 0;
+        }
+        /// <summary>
+        /// Calculates the probability that each of the file is associated with each of the parties using TFIDF
+        /// </summary>
+        public void CalculatePartyTFIDF()
+        {
+            int totalWords = 0;
+            List<string> SpeechWords = new List<string>();
+            List<Word> CommonWords = new List<Word>();
+            bool add = false;
+            // for each party
             foreach (Party p in m_PartyList)
             {
-                p.PartyPercentage = (p.getDocumentProbability / totalProb)*100;
-                if (p.getDocumentProbability < HighestValue)
+                //for each speech
+                foreach (Speech s in p.getSpeechList)
+                {
+                    //make a list of words.
+                    SpeechWords = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
+                    //get the total words amongst all documents assosiated with that party.
+                    totalWords += SpeechWords.Count();
+                    //for each string in the speech
+                    foreach (string str in SpeechWords)
+                    {
+                        //for each word in the document being classified.
+                        foreach (string str2 in fileContent)
+                        {
+                            //if they are in both documents.
+                            if (str2.ToLower() == str.ToLower())
+                            {
+                                add = true;
+                            }
+                        }
+                        //add  the word to the common words
+                        if (add)
+                        {
+                            if (CommonWords.Any(x => x.getWord == str))
+                            {
+                                foreach (Word w in CommonWords)
+                                {
+                                    if (w.getWord == str)
+                                    {
+                                        w.getFreq++;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                CommonWords.Add(new Word(str, 1, 0));
+                            }
+                            add = false;
+                        }
+                    }
+                }
+                foreach (Word word2 in CommonWords)
+                {
+                    word2.CalculateTFIDF(totalWords, p.getSpeechList.Count(), fileContent.Count());
+                    p.getTFIDF += word2.getTFIDF;
+                }
+
+                CommonWords.Clear();
+                totalWords = 0;
+            }
+        }
+        /// <summary>
+        /// Uses Ngrams and TFIDF to calculate the probability that the file is associated with each of the parties
+        /// </summary>
+        private void CalculatePartyNgrams()
+        {
+            
+        }
+        /// <summary>
+        /// Prints the probabilities that the file belongs to each of the parties (prints results of CalculateParty, CalculatePartyTFIDF and CalculatePartyNgrams)
+        /// </summary>
+        public void PrintValues()
+        {
+            string HighestParty = "";
+            double HighestValue = 0;
+
+            //Normal Percentages
+            foreach (Party p in m_PartyList)
+            {
+                if (p.getDocumentProbability > HighestValue)
                 {
                     HighestValue = p.getDocumentProbability;
                     HighestParty = p.getName;
                 }
 
-                Console.WriteLine("Probability of " + p.getName + ": " + p.getDocumentProbability + " with " + p.PartyPercentage + "%");
+                Console.WriteLine("Using Maths: " + p.getName + " " + p.getDocumentProbability);
+            }
+            Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
+
+            //TFIDF Percentages
+            foreach (Party p in m_PartyList)
+            {
+                Console.WriteLine("Using TFIDF: " + p.getName + " " + p.getTFIDF);
+                if (p.getTFIDF < HighestValue || HighestValue == 0)
+                {
+                    HighestValue = p.getTFIDF;
+                    HighestParty = p.getName;
+                }
             }
             Console.WriteLine("The document is most likely: " + HighestParty);
             Console.ReadLine();
-        }
-        /// <summary>
-        /// Calculates the probability that each of the files is associated with each of the parties
-        /// </summary>
-        public void CalculatePartyTFIDF()
-        {
-            int TotalDocs=0;
-            List<Word> CommonWords = new List<Word>();
-            foreach(Party p in m_PartyList)
-            {
-                TotalDocs = TotalDocs + p.getSpeechList.Count();
-            }
-            //total words
-            //total num of scripts (in entire program)
-            //the number of scripts containing that word.
-            List<string> fileWords = fileContent.Split(' ').ToArray().ToList();
-            bool add = true;
-
-            //gets all of the words and the number of times they have appeared in the document. 
-            for (int i = 0; i < fileWords.Count(); i++)
-            {
-                foreach(Word w in CommonWords)
-                {
-                    if (fileWords[i] == w.getWord)
-                        add = false;
-                }
-                if (add)
-                    CommonWords.Add(new Word(fileWords[i],1,0));
-                else if(!add)
-                {
-                    foreach(Word w in CommonWords)
-                    {
-                        if(w.getWord == fileWords[i])
-                        {
-                            w.getFreq++;
-                        }
-                    }
-                    add = true;
-                }
-            }
-
-            int TotalWordDocs = 0;
-            foreach (Word w in CommonWords)
-            {
-                foreach (Party p in m_PartyList)
-                {
-                    foreach (Speech s in p.getSpeechList)
-                    {
-                        List<string> words = s.getContent.Split(' ', '\n').ToArray().ToList();
-
-                        foreach (string str in words)
-                        {
-                            if (str.ToLower() == w.getWord.ToLower())
-                            {
-                                TotalDocs++;
-                            }
-                        }
-                    }
-                }
-                w.CalculateTFIDF(TotalDocs, CommonWords.Count(), TotalWordDocs);
-                Console.WriteLine(w.getTFIDF);
-            }
-            //TFIDF FOR EACH WORD. THEN TIMES PROBABILITIES WITH ONE ANOTHER LIKE WITH THE LAST THING YOU DONE. (TIMES THEM TOGETHER THINGY) 
-            Console.ReadLine();
-
-
-            //count number of occurences each word has. 
-        }
-        private void CalculatePartyNgrams()
-        {
-            Dictionary<string, int> NgramsDict = new Dictionary<string, int>();
         }
         #endregion
     }
