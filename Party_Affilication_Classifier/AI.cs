@@ -75,6 +75,7 @@ namespace Party_Affilication_Classifier
             }
             else if(!Training)
             {
+                Filter filter = new Filter();
                 d = new DirectoryInfo("TestFiles");
                 files = d.GetFiles("*.txt");
                 StreamReader sr;
@@ -93,7 +94,7 @@ namespace Party_Affilication_Classifier
                         FileInfo f = files[int.Parse(selection) - 1];
 
                         sr = new StreamReader(@"TestFiles\" + f.Name);
-                        fileContent = sr.ReadToEnd().Split(' ', '\n').ToArray().ToList();
+                        fileContent = filter.RemoveAll(sr.ReadToEnd().ToLower()).Split(' ', '\n').ToArray().ToList();
                         sr.Close();
                     }
                     catch
@@ -378,9 +379,90 @@ namespace Party_Affilication_Classifier
         /// <summary>
         /// Uses Ngrams and TFIDF to calculate the probability that the file is associated with each of the parties
         /// </summary>
-        private void CalculatePartyNgrams()
+        public void CalculatePartyNgrams()
         {
-            
+            List<string> SpeechWords = new List<string>();
+            List<string> SpeechWordsNew = new List<string>();
+            List<string> fileContentNew = new List<string>();
+            List<Word> CommonWords = new List<Word>();
+            int totalWords=0;
+            string temp = "";
+            bool add = false;
+
+            //link two words together in filecontent
+            for(int i =0;i < fileContent.Count();i++)
+            {
+                temp = fileContent[i];
+                i++;
+                temp += " " + fileContent[i];
+                fileContentNew.Add(temp);
+                temp = "";
+            }
+            //for each party
+            foreach(Party p in m_PartyList)
+            {
+                //for each speech associated with that party.
+                foreach(Speech s in p.getSpeechList)
+                {
+                    SpeechWords = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
+                    //add two words together.
+                    for(int i =0;i < SpeechWords.Count();i++)
+                    {
+                        temp = SpeechWords[i];
+                        i++;
+                        if (!(SpeechWords.Count()-1 < i))
+                        {
+                            temp += " " + SpeechWords[i];
+                            
+                        }
+                        SpeechWordsNew.Add(temp);
+                        temp = "";
+                    }
+                }
+
+                //Adapted TFIDF code.
+                totalWords += SpeechWordsNew.Count();
+                //for each string in the speech
+                foreach (string str in SpeechWordsNew)
+                {
+                    //for each word in the document being classified.
+                    foreach (string str2 in fileContentNew)
+                    {
+                        //if they are in both documents.
+                        if (str2.ToLower() == str.ToLower())
+                        {
+                            add = true;
+                        }
+                    }
+                    //add  the word to the common words
+                    if (add)
+                    {
+                        if (CommonWords.Any(x => x.getWord == str))
+                        {
+                            foreach (Word w in CommonWords)
+                            {
+                                if (w.getWord == str)
+                                {
+                                    w.getFreq++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            CommonWords.Add(new Word(str, 1, 0));
+                        }
+                        add = false;
+                    }
+                }
+                //calculate the TFIDF for each Ngram word (word family)
+                foreach (Word word2 in CommonWords)
+                {
+                    word2.CalculateTFIDF(totalWords, p.getSpeechList.Count(), fileContentNew.Count());
+                    p.getNgrams += word2.getTFIDF;
+                }
+                CommonWords.Clear();
+                totalWords = 0;
+            }
         }
         /// <summary>
         /// Prints the probabilities that the file belongs to each of the parties (prints results of CalculateParty, CalculatePartyTFIDF and CalculatePartyNgrams)
@@ -402,7 +484,8 @@ namespace Party_Affilication_Classifier
                 Console.WriteLine("Using Maths: " + p.getName + " " + p.getDocumentProbability);
             }
             Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
-
+            HighestValue = 0;
+            HighestParty = "";
             //TFIDF Percentages
             foreach (Party p in m_PartyList)
             {
@@ -413,9 +496,24 @@ namespace Party_Affilication_Classifier
                     HighestParty = p.getName;
                 }
             }
+            Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
+            HighestValue = 0;
+            HighestParty = "";
+
+            //Ngram Percentages
+            foreach (Party p in m_PartyList)
+            {
+                Console.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + p.getNgrams);
+                if(p.getNgrams < HighestValue || HighestValue == 0)
+                {
+                    HighestValue = p.getNgrams;
+                    HighestParty = p.getName;
+                }
+            }
             Console.WriteLine("The document is most likely: " + HighestParty);
             Console.ReadLine();
         }
+        
         #endregion
     }
 }

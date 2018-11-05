@@ -91,6 +91,7 @@ namespace Party_Affilication_Classifier
             AI.SelectFile(false);
             AI.CalculateParty();
             AI.CalculatePartyTFIDF();
+            AI.CalculatePartyNgrams();
             AI.PrintValues();
         }
         /// <summary>

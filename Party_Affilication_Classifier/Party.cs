@@ -13,7 +13,7 @@ namespace Party_Affilication_Classifier
     public class Party
     {
         //The name of the party.
-        private string m_Name="";
+        private string m_Name = "";
         public string getName { get { return m_Name; } set { m_Name = value; } }
 
         //The list of speeches associated with the party
@@ -25,7 +25,7 @@ namespace Party_Affilication_Classifier
         public double getDocumentProbability { get { return m_DocumentProbability; } set { m_DocumentProbability = value; } }
 
         //The P(cata) of the party.
-        private double m_Proability=0;
+        private double m_Proability = 0;
         public double getProbability { get { return m_Proability; } set { m_Proability = value; } }
 
         //The list of words associated with the party.
@@ -35,6 +35,9 @@ namespace Party_Affilication_Classifier
         //the TFIDF probability of a document being associated with this party.
         private double m_TFIDF;
         public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
+
+        private double m_Ngrams;
+        public double getNgrams { get { return m_Ngrams; } set { m_Ngrams = value; } }
 
         /// <summary>
         /// Creates a new party.
