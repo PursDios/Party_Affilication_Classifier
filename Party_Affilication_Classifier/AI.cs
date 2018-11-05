@@ -365,20 +365,26 @@ namespace Party_Affilication_Classifier
                 }
             }
 
-            foreach(Word w in CommonWords)
+            int TotalWordDocs = 0;
+            foreach (Word w in CommonWords)
             {
-                int TotalDocsCount=0;
-                foreach(Party p in m_PartyList)
+                foreach (Party p in m_PartyList)
                 {
-                    foreach(Word w2 in p.getWordList)
+                    foreach (Speech s in p.getSpeechList)
                     {
-                        if(w.getWord == w2.getWord)
+                        List<string> words = s.getContent.Split(' ', '\n').ToArray().ToList();
+
+                        foreach (string str in words)
                         {
-                            TotalDocsCount++;
+                            if (str.ToLower() == w.getWord.ToLower())
+                            {
+                                TotalDocs++;
+                            }
                         }
                     }
                 }
-                w.CalculateTFIDF(TotalDocs, CommonWords.Count(),TotalDocsCount);
+                w.CalculateTFIDF(TotalDocs, CommonWords.Count(), TotalWordDocs);
+                Console.WriteLine(w.getTFIDF);
             }
             //TFIDF FOR EACH WORD. THEN TIMES PROBABILITIES WITH ONE ANOTHER LIKE WITH THE LAST THING YOU DONE. (TIMES THEM TOGETHER THINGY) 
             Console.ReadLine();
@@ -389,11 +395,6 @@ namespace Party_Affilication_Classifier
         private void CalculatePartyNgrams()
         {
             Dictionary<string, int> NgramsDict = new Dictionary<string, int>();
-
-            foreach (Party p in m_PartyList)
-            {
-
-            }
         }
         #endregion
     }

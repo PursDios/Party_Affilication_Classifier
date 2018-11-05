@@ -23,9 +23,12 @@ namespace Party_Affilication_Classifier
             m_Freq = p_Freq;
             m_Probability = p_Probability;
         }
+
+        /// <summary>
+        /// Needed for serialization.
+        /// </summary>
         public Word()
         {
-            //Needed for serialization.
         }
 
         public void CalculateTFIDF(int DocumentCount, int totalWords, int wordAcrossAllDocs)
