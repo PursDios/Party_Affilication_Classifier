@@ -25,8 +25,8 @@ namespace Party_Affilication_Classifier
         public double getDocumentProbability { get { return m_DocumentProbability; } set { m_DocumentProbability = value; } }
 
         //The P(cata) of the party.
-        private double m_Proability = 0;
-        public double getProbability { get { return m_Proability; } set { m_Proability = value; } }
+        private double m_Pcata = 0;
+        public double getPcata { get { return m_Pcata; } set { m_Pcata = value; } }
 
         //The list of words associated with the party.
         private List<Word> m_WordList = new List<Word>();

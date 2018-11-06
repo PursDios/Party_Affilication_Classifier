@@ -87,40 +87,14 @@ namespace Party_Affilication_Classifier
         /// <returns></returns>
         public string LementizeWords(string s)
         {
-            List<string> wordList = s.Split(' ').ToArray().ToList();
-            List<string> finalList = new List<string>();
-            List<char> charList;
-            s.ToLower();
+            Lementize l = new Lementize();
+            List<string> stringWords = new List<string>();
+            s.ToLower().Split(' ', '\n').ToArray().ToList();
 
-            foreach(string str in wordList)
+            foreach(string str in stringWords)
             {
-                charList = str.ToCharArray().ToList();
-
-                if (3 < charList.Count())
-                {
-                    //removes ies
-                    if (charList[charList.Count() - 3] == 'i' && charList[charList.Count() - 2] == 'e' && charList[charList.Count() - 1] == 's')
-                    {
-                        charList[charList.Count() - 3] = ' ';
-                        charList[charList.Count() - 2] = ' ';
-                        charList[charList.Count() - 1] = ' ';
-                    }
-                    //removes s
-                    else if (charList[charList.Count() - 1] == 's')
-                    {
-                        charList[charList.Count() - 1] = ' ';
-                    }
-                    else
-                    {
-                        finalList.Add(new string(charList.ToArray()));
-                    }
-                }
-                else
-                {
-                    finalList.Add(new string(charList.ToArray()));
-                }
+                l.LementizeWord(str);
             }
-            
             return s;
         }
     }

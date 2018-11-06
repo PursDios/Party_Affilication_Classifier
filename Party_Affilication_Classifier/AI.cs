@@ -162,7 +162,7 @@ namespace Party_Affilication_Classifier
             //calculate the Pcatagory
             foreach (Party p3 in m_PartyList)
             {
-                p3.getProbability = ((double)p3.getSpeechList.Count() / totalDocs);
+                p3.getPcata = ((double)p3.getSpeechList.Count() / totalDocs);
             }
         }
 
@@ -238,7 +238,7 @@ namespace Party_Affilication_Classifier
                 sr.WriteLine(p.getName);
                 foreach (Word kvp in p.getWordList)
                 {
-                    sr.WriteLine("Word: " + kvp.getWord + ", Frequency: " + kvp.getFreq + ", Probability: " + p.getProbability);
+                    sr.WriteLine("Word: " + kvp.getWord + ", Frequency: " + kvp.getFreq + ", Probability: " + p.getPcata);
                 }
             }
 
@@ -305,9 +305,9 @@ namespace Party_Affilication_Classifier
                 foreach (KeyValuePair<string, double> kvp in commonWords)
                 {
                     if (probability == 0)
-                        probability = (double)kvp.Value;
+                        probability = Math.Log(kvp.Value);
                     else
-                        probability = (double)probability * kvp.Value;
+                        probability += Math.Log(kvp.Value);
                 }
                 p.getDocumentProbability = probability;
                 probability = 0;
@@ -471,25 +471,38 @@ namespace Party_Affilication_Classifier
         {
             string HighestParty = "";
             double HighestValue = 0;
+            double total=0;
 
+            foreach (Party p in m_PartyList)
+            {
+                total += p.getDocumentProbability;
+            }
+            total *= -1;
             //Normal Percentages
             foreach (Party p in m_PartyList)
             {
-                if (p.getDocumentProbability > HighestValue)
+
+                if (p.getDocumentProbability < HighestValue || HighestValue == 0)
                 {
                     HighestValue = p.getDocumentProbability;
                     HighestParty = p.getName;
                 }
-
-                Console.WriteLine("Using Maths: " + p.getName + " " + p.getDocumentProbability);
+                Console.WriteLine("Using Maths: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
             }
             Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
             HighestValue = 0;
             HighestParty = "";
+            total = 0;
+
+            foreach (Party p in m_PartyList)
+            {
+                total += p.getTFIDF;
+            }
+            total *= -1;
             //TFIDF Percentages
             foreach (Party p in m_PartyList)
             {
-                Console.WriteLine("Using TFIDF: " + p.getName + " " + p.getTFIDF);
+                Console.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
                 if (p.getTFIDF < HighestValue || HighestValue == 0)
                 {
                     HighestValue = p.getTFIDF;
@@ -499,11 +512,17 @@ namespace Party_Affilication_Classifier
             Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
             HighestValue = 0;
             HighestParty = "";
+            total = 0;
 
+            foreach (Party p in m_PartyList)
+            {
+                total += p.getNgrams;
+            }
+            total *= -1;
             //Ngram Percentages
             foreach (Party p in m_PartyList)
             {
-                Console.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + p.getNgrams);
+                Console.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
                 if(p.getNgrams < HighestValue || HighestValue == 0)
                 {
                     HighestValue = p.getNgrams;
