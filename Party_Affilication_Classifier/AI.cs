@@ -390,7 +390,7 @@ namespace Party_Affilication_Classifier
             bool add = false;
 
             //link two words together in filecontent
-            for(int i =0;i < fileContent.Count();i++)
+            for(int i =0;i < fileContent.Count()-1;i++)
             {
                 temp = fileContent[i];
                 i++;
