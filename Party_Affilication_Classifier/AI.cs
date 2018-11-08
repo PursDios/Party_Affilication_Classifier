@@ -381,9 +381,9 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void CalculatePartyNgrams()
         {
-            List<string> SpeechWords = new List<string>();
             List<string> SpeechWordsNew = new List<string>();
             List<string> fileContentNew = new List<string>();
+            List<string> SpeechNgram = new List<string>();
             List<Word> CommonWords = new List<Word>();
             int totalWords=0;
             string temp = "";
@@ -398,32 +398,47 @@ namespace Party_Affilication_Classifier
                 fileContentNew.Add(temp);
                 temp = "";
             }
+            int PartyNum=0;
             //for each party
             foreach(Party p in m_PartyList)
             {
+                PartyNum++;
+                Console.WriteLine("Calculating Probabilities...\nThis may take some time... \nParty:" + PartyNum + "/" + m_PartyList.Count());
                 //for each speech associated with that party.
-                foreach(Speech s in p.getSpeechList)
+                foreach (Speech s in p.getSpeechList)
                 {
-                    SpeechWords = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
-                    //add two words together.
-                    for(int i =0;i < SpeechWords.Count();i++)
+                    SpeechWordsNew = s.NgramFromSpeech();
+                }
+                //Grabs and properly splits the Ngram File.
+                List<string> NgramDicTemp = new List<string>();
+                NgramDicTemp = File.ReadAllLines("Ngrams.txt").ToList();
+                List<string> NgramDic = new List<string>();
+                
+                foreach(string s in NgramDicTemp)
+                {
+                    string[] tempStr = new string[2];
+                    tempStr = s.Split('/').ToArray();
+
+                    if(tempStr.Count() >= 2)
+                        NgramDic.Add(tempStr[0] + " " + tempStr[1]);
+                }
+                //Compares the speechword Ngram with the NgramDic
+                foreach(string s in NgramDic)
+                {
+                    foreach(string ss in SpeechWordsNew)
                     {
-                        temp = SpeechWords[i];
-                        i++;
-                        if (!(SpeechWords.Count()-1 < i))
+                        if (s == ss)
                         {
-                            temp += " " + SpeechWords[i];
-                            
+                            SpeechNgram.Add(s);
                         }
-                        SpeechWordsNew.Add(temp);
-                        temp = "";
                     }
                 }
+                Console.Clear();
 
                 //Adapted TFIDF code.
-                totalWords += SpeechWordsNew.Count();
+                totalWords += SpeechNgram.Count();
                 //for each string in the speech
-                foreach (string str in SpeechWordsNew)
+                foreach (string str in SpeechNgram)
                 {
                     //for each word in the document being classified.
                     foreach (string str2 in fileContentNew)
@@ -461,6 +476,8 @@ namespace Party_Affilication_Classifier
                     p.getNgrams += word2.getTFIDF;
                 }
                 CommonWords.Clear();
+                SpeechNgram.Clear();
+                SpeechWordsNew.Clear();
                 totalWords = 0;
             }
         }
