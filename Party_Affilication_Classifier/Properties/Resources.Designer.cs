@@ -119,89 +119,53 @@ namespace Party_Affilication_Classifier.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 	a	a
-        ///	a	AAA
-        ///	a	an
-        ///	a	and
-        ///	a	another
-        ///	a	B+
-        ///	a	B-
-        ///	a	B-
-        ///	a	B-
-        ///	a	B-movie
-        ///	a	B-plus
-        ///	a	B.
-        ///	a	B.A.
-        ///	a	B.F.A
-        ///	a	B.S.
-        ///	a	BA
-        ///	a	babble
-        ///	a	babbling
-        ///	a	babe
-        ///	a	baboon
-        ///	a	baby
-        ///	A	baby
-        ///	a	Baby
-        ///	A	BABY
-        ///	a	BABY
-        ///	a	baby-faced
-        ///	a	baby-sitter
-        ///	a	babysitter
-        ///	a	baccalaureate
-        ///	a	Bach
-        ///	a	bachelor
-        ///	a	Bachelor
-        ///	A	bachelor
-        ///	a	bachelorette
-        ///	a	bachelors
-        ///	a	back
-        ///	A	back
-        ///	a	back-and-forth
-        ///	a	back-door
-        ///	a	back-to-basics
-        ///	a	back-to-school
-        ///	a	back-up
-        ///	a	backboard
-        ///	a	backbone
-        ///	a	backcountry
-        ///	a [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to a/a/
+        ///a/an/
+        ///a/another/
+        ///a/B-/
+        ///a/B-/
+        ///a/B-plus/
+        ///a/B.A./
+        ///a/B.S./
+        ///a/babble/
+        ///a/babe/
+        ///a/baby/
+        ///a/Baby/
+        ///a/BABY/
+        ///a/baby-sitter/
+        ///a/baccalaureate/
+        ///a/bachelor/
+        ///A/bachelor/
+        ///a/bachelors/
+        ///A/back/
+        ///a/back-door/
+        ///a/back-to-school/
+        ///a/backboard/
+        ///a/backcountry/
+        ///a/backdrop/
+        ///a/backfire/
+        ///A/background/
+        ///a/backhanded/
+        ///a/backing/
+        ///a/backlit/
+        ///a/backpack/
+        ///a/backpacking/
+        ///a/backstage/
+        ///a/backup/
+        ///a/backward/
+        ///a/backwater/
+        ///a/backyard/
+        ///a/bacteria/
+        ///a/bacterium/
+        ///A/bad/
+        ///A/BAD/
+        ///a/badass/
+        ///a/badger/
+        ///a/badminton/ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Ngrams {
             get {
                 return ResourceManager.GetString("Ngrams", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Party xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&lt;getName&gt;Coalition&lt;/getName&gt;&lt;getSpeechList&gt;&lt;Speech&gt;&lt;getName&gt;Coalition9thMay2012.txt&lt;/getName&gt;&lt;getContent&gt;My Lords and Members of the House of Commons, my Government&apos;s legislative programme will focus on economic growth, justice and constitutional reform.
-        ///My Ministers&apos; first priority will be to reduce the deficit and restore economic stability.
-        ///Legislation will be  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Party0 {
-            get {
-                return ResourceManager.GetString("Party0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Party xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&lt;getName&gt;Conservative&lt;/getName&gt;&lt;getSpeechList&gt;&lt;Speech&gt;&lt;getName&gt;Conservative16thNov1994.txt&lt;/getName&gt;&lt;getContent&gt;My Lords and Members of the House of Commons, 
-        ///The Duke of Edinburgh and I look forward to receiving the state visit of His Highness the Amir of Kuwait in May and His Excellency the President of Finland in October next year. 
-        ///The Duke of Edinburgh and I  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Party1 {
-            get {
-                return ResourceManager.GetString("Party1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Party xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&lt;getName&gt;Labour&lt;/getName&gt;&lt;getSpeechList&gt;&lt;Speech&gt;&lt;getName&gt;Labour26thNov2003.txt&lt;/getName&gt;&lt;getContent&gt;My Lords and Members of the House of Commons 
-        ///My Government will maintain its key commitment to economic stability and growth. 
-        ///This will enable my Government to continue to deliver reform of the public services and continue to focus on greater opportunity and socia [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Party2 {
-            get {
-                return ResourceManager.GetString("Party2", resourceCulture);
             }
         }
         

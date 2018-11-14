@@ -21,8 +21,10 @@ namespace Party_Affilication_Classifier
         public List<Party> getPartyList { set { m_PartyList = value; } }
         int totalDocs=0;
 
+        //a list of all the files in the TrainingFiles directory.
+        private FileInfo[] Unfilteredfiles = null;
         //The list of files that the user has selected.
-        private FileInfo[] files = null;
+        private List<FileInfo> files = new List<FileInfo>();
         //The contents of the file the user is consulting.
         List<string> fileContent = new List<string>();
 
@@ -39,16 +41,16 @@ namespace Party_Affilication_Classifier
             if (Training)
             {
                 d = new DirectoryInfo("TrainingFiles");
-                files = d.GetFiles("*.txt");
+                Unfilteredfiles = d.GetFiles("*.txt");
                 
                 do
                 {
                     retry = false;
                     Console.WriteLine("Please select which files you'd like to use split up by a comma");
 
-                    for (int i = 0; i < files.Count(); i++)
+                    for (int i = 0; i < Unfilteredfiles.Count(); i++)
                     {
-                        Console.WriteLine(i + 1 + ") " + files[i].Name);
+                        Console.WriteLine(i + 1 + ") " + Unfilteredfiles[i].Name);
                     }
 
                     selection = Console.ReadLine();
@@ -58,9 +60,10 @@ namespace Party_Affilication_Classifier
                     Console.WriteLine("You have selected: ");
                     try
                     {
-                        foreach (string s in splitSelection)
+                        for(int i=0;i<splitSelection.Count();i++)
                         {
-                            Console.WriteLine(files[int.Parse(s) - 1].Name);
+                            Console.WriteLine(Unfilteredfiles[int.Parse(splitSelection[i])-1].Name);
+                            files.Add(Unfilteredfiles[i]);
                         }
                     }
                     catch
@@ -71,27 +74,29 @@ namespace Party_Affilication_Classifier
                         Console.Clear();
                         retry = true;
                     }
+                    
+                    Console.ReadLine();
                 } while (retry == true);
             }
             else if(!Training)
             {
                 Filter filter = new Filter();
                 d = new DirectoryInfo("TestFiles");
-                files = d.GetFiles("*.txt");
+                Unfilteredfiles = d.GetFiles("*.txt");
                 StreamReader sr;
                 do
                 {
                     retry = false;
                     Console.WriteLine("Please select which file you would like to consult.");
 
-                    for (int i = 0; i < files.Count(); i++)
+                    for (int i = 0; i < Unfilteredfiles.Count(); i++)
                     {
-                        Console.WriteLine(i + 1 + ") " + files[i].Name);
+                        Console.WriteLine(i + 1 + ") " + Unfilteredfiles[i].Name);
                     }
                     selection = Console.ReadLine();
                     try
                     {
-                        FileInfo f = files[int.Parse(selection) - 1];
+                        FileInfo f = Unfilteredfiles[int.Parse(selection) - 1];
 
                         sr = new StreamReader(@"TestFiles\" + f.Name);
                         fileContent = filter.RemoveAll(sr.ReadToEnd().ToLower()).Split(' ', '\n').ToArray().ToList();
@@ -232,6 +237,13 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void SaveTraining()
         {
+            DirectoryInfo di = new DirectoryInfo(@"TrainingData\");
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
             StreamWriter sr = new StreamWriter("WordProbability.txt");
             foreach (Party p in m_PartyList)
             {
@@ -398,6 +410,7 @@ namespace Party_Affilication_Classifier
                 fileContentNew.Add(temp);
                 temp = "";
             }
+
             int PartyNum=0;
             //for each party
             foreach(Party p in m_PartyList)
@@ -422,6 +435,7 @@ namespace Party_Affilication_Classifier
                     if(tempStr.Count() >= 2)
                         NgramDic.Add(tempStr[0] + " " + tempStr[1]);
                 }
+
                 //Compares the speechword Ngram with the NgramDic
                 foreach(string s in NgramDic)
                 {

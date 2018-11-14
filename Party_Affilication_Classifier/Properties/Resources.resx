@@ -136,15 +136,6 @@
   <data name="Ngrams" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bin\Debug\Ngrams.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="Party0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bin\Debug\TrainingData\Party0.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="Party1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bin\Debug\TrainingData\Party1.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="Party2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bin\Debug\TrainingData\Party2.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="stopwords" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bin\Debug\stopwords.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
