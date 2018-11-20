@@ -13,7 +13,7 @@ namespace Party_Affilication_Classifier
     class Lementize
     {
         //gets the alphabet
-        private char[] m_Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        private char[] m_Alphabet = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
         //array of vowels
         private  char[] m_Vowels = "aeiou".ToCharArray();
         //array of endings that need to be replaced with Li
