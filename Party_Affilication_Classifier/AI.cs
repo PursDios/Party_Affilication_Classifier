@@ -18,14 +18,13 @@ namespace Party_Affilication_Classifier
         List<string> allParties = new List<string> { "Labour", "Conservative", "Coalition" };
         //The list of parties and all there associated data.
         private List<Party> m_PartyList = new List<Party>();
-        //property to get the list of parties
         public List<Party> getPartyList { set { m_PartyList = value; } }
-        //the total number of selected documents
         int totalDocs=0;
+
+        //a list of all the files in the TrainingFiles directory.
+        private FileInfo[] Unfilteredfiles = null;
         //The list of files that the user has selected.
-        private FileInfo[] files = null;
-        //Selected Consultation File.
-        FileInfo consultFile;
+        private List<FileInfo> files = new List<FileInfo>();
         //The contents of the file the user is consulting.
         List<string> fileContent = new List<string>();
 
@@ -42,16 +41,16 @@ namespace Party_Affilication_Classifier
             if (Training)
             {
                 d = new DirectoryInfo("TrainingFiles");
-                files = d.GetFiles("*.txt");
+                Unfilteredfiles = d.GetFiles("*.txt");
                 
                 do
                 {
                     retry = false;
                     Console.WriteLine("Please select which files you'd like to use split up by a comma");
 
-                    for (int i = 0; i < files.Count(); i++)
+                    for (int i = 0; i < Unfilteredfiles.Count(); i++)
                     {
-                        Console.WriteLine(i + 1 + ") " + files[i].Name);
+                        Console.WriteLine(i + 1 + ") " + Unfilteredfiles[i].Name);
                     }
 
                     selection = Console.ReadLine();
@@ -61,9 +60,10 @@ namespace Party_Affilication_Classifier
                     Console.WriteLine("You have selected: ");
                     try
                     {
-                        foreach (string s in splitSelection)
+                        for(int i=0;i<splitSelection.Count();i++)
                         {
-                            Console.WriteLine(files[int.Parse(s) - 1].Name);
+                            Console.WriteLine(Unfilteredfiles[int.Parse(splitSelection[i])-1].Name);
+                            files.Add(Unfilteredfiles[i]);
                         }
                     }
                     catch
@@ -74,29 +74,30 @@ namespace Party_Affilication_Classifier
                         Console.Clear();
                         retry = true;
                     }
+                    
+                    Console.ReadLine();
                 } while (retry == true);
             }
             else if(!Training)
             {
-                files = null;
                 Filter filter = new Filter();
                 d = new DirectoryInfo("TestFiles");
-                files = d.GetFiles("*.txt");
+                Unfilteredfiles = d.GetFiles("*.txt");
                 StreamReader sr;
                 do
                 {
                     retry = false;
                     Console.WriteLine("Please select which file you would like to consult.");
 
-                    for (int i = 0; i < files.Count(); i++)
+                    for (int i = 0; i < Unfilteredfiles.Count(); i++)
                     {
-                        Console.WriteLine(i + 1 + ") " + files[i].Name);
+                        Console.WriteLine(i + 1 + ") " + Unfilteredfiles[i].Name);
                     }
                     selection = Console.ReadLine();
                     try
                     {
-                        FileInfo f = files[int.Parse(selection) - 1];
-                        consultFile = f;
+                        FileInfo f = Unfilteredfiles[int.Parse(selection) - 1];
+
                         sr = new StreamReader(@"TestFiles\" + f.Name);
                         fileContent = filter.RemoveAll(sr.ReadToEnd().ToLower()).Split(' ', '\n').ToArray().ToList();
                         sr.Close();
@@ -236,6 +237,13 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void SaveTraining()
         {
+            DirectoryInfo di = new DirectoryInfo(@"TrainingData\");
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
             StreamWriter sr = new StreamWriter("WordProbability.txt");
             foreach (Party p in m_PartyList)
             {
@@ -385,16 +393,16 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void CalculatePartyNgrams()
         {
-            List<string> SpeechWords = new List<string>();
             List<string> SpeechWordsNew = new List<string>();
             List<string> fileContentNew = new List<string>();
+            List<string> SpeechNgram = new List<string>();
             List<Word> CommonWords = new List<Word>();
             int totalWords=0;
             string temp = "";
             bool add = false;
 
             //link two words together in filecontent
-            for(int i =0;i < fileContent.Count();i++)
+            for(int i =0;i < fileContent.Count()-1;i++)
             {
                 temp = fileContent[i];
                 i++;
@@ -402,32 +410,49 @@ namespace Party_Affilication_Classifier
                 fileContentNew.Add(temp);
                 temp = "";
             }
+
+            int PartyNum=0;
             //for each party
             foreach(Party p in m_PartyList)
             {
+                PartyNum++;
+                Console.WriteLine("Calculating Probabilities...\nThis may take some time... \nParty:" + PartyNum + "/" + m_PartyList.Count());
                 //for each speech associated with that party.
-                foreach(Speech s in p.getSpeechList)
+                foreach (Speech s in p.getSpeechList)
                 {
-                    SpeechWords = s.getContent.ToLower().Split(' ', '\n').ToArray().ToList();
-                    //add two words together.
-                    for(int i =0;i < SpeechWords.Count();i++)
-                    {
-                        temp = SpeechWords[i];
-                        i++;
-                        if (!(SpeechWords.Count()-1 < i))
-                        {
-                            temp += " " + SpeechWords[i];
-                            
-                        }
-                        SpeechWordsNew.Add(temp);
-                        temp = "";
-                    }
+                    SpeechWordsNew = s.NgramFromSpeech();
+                }
+                //Grabs and properly splits the Ngram File.
+                List<string> NgramDicTemp = new List<string>();
+                NgramDicTemp = File.ReadAllLines("Ngrams.txt").ToList();
+                List<string> NgramDic = new List<string>();
+                
+                foreach(string s in NgramDicTemp)
+                {
+                    string[] tempStr = new string[2];
+                    tempStr = s.Split('/').ToArray();
+
+                    if(tempStr.Count() >= 2)
+                        NgramDic.Add(tempStr[0] + " " + tempStr[1]);
                 }
 
+                //Compares the speechword Ngram with the NgramDic
+                foreach(string s in NgramDic)
+                {
+                    foreach(string ss in SpeechWordsNew)
+                    {
+                        if (s == ss)
+                        {
+                            SpeechNgram.Add(s);
+                        }
+                    }
+                }
+                Console.Clear();
+
                 //Adapted TFIDF code.
-                totalWords += SpeechWordsNew.Count();
+                totalWords += SpeechNgram.Count();
                 //for each string in the speech
-                foreach (string str in SpeechWordsNew)
+                foreach (string str in SpeechNgram)
                 {
                     //for each word in the document being classified.
                     foreach (string str2 in fileContentNew)
@@ -465,6 +490,8 @@ namespace Party_Affilication_Classifier
                     p.getNgrams += word2.getTFIDF;
                 }
                 CommonWords.Clear();
+                SpeechNgram.Clear();
+                SpeechWordsNew.Clear();
                 totalWords = 0;
             }
         }
@@ -473,9 +500,9 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void PrintValues()
         {
-            string HighestParty = "", HighestPartyTFIDF="", HighestPartyNgrams="";
-            double HighestValue = 0, HighestValueTFIDF=0, HighestValueNgrams=0;
-            double total = 0, totalTFIDF = 0, totalNgrams = 0;
+            string HighestParty = "";
+            double HighestValue = 0;
+            double total=0;
 
             foreach (Party p in m_PartyList)
             {
@@ -485,89 +512,58 @@ namespace Party_Affilication_Classifier
             //Normal Percentages
             foreach (Party p in m_PartyList)
             {
+
                 if (p.getDocumentProbability < HighestValue || HighestValue == 0)
                 {
                     HighestValue = p.getDocumentProbability;
                     HighestParty = p.getName;
                 }
-                Console.WriteLine("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
+                Console.WriteLine("Using Maths: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
             }
             Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
+            HighestValue = 0;
+            HighestParty = "";
+            total = 0;
 
             foreach (Party p in m_PartyList)
             {
-                totalTFIDF += p.getTFIDF;
+                total += p.getTFIDF;
             }
-            totalTFIDF *= -1;
+            total *= -1;
             //TFIDF Percentages
             foreach (Party p in m_PartyList)
             {
                 Console.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
-                if (p.getTFIDF < HighestValueTFIDF || HighestValue == 0)
+                if (p.getTFIDF < HighestValue || HighestValue == 0)
                 {
-                    HighestValueTFIDF = p.getTFIDF;
-                    HighestPartyTFIDF = p.getName;
+                    HighestValue = p.getTFIDF;
+                    HighestParty = p.getName;
                 }
             }
-            Console.WriteLine("The document is most likely: " + HighestPartyTFIDF + "\n\n\n");
+            Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
+            HighestValue = 0;
+            HighestParty = "";
+            total = 0;
 
             foreach (Party p in m_PartyList)
             {
-                totalNgrams += p.getNgrams;
+                total += p.getNgrams;
             }
-            totalNgrams *= -1;
+            total *= -1;
             //Ngram Percentages
             foreach (Party p in m_PartyList)
             {
                 Console.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
-                if(p.getNgrams < HighestValueNgrams || HighestValue == 0)
+                if(p.getNgrams < HighestValue || HighestValue == 0)
                 {
-                    HighestValueNgrams = p.getNgrams;
-                    HighestPartyNgrams = p.getName;
+                    HighestValue = p.getNgrams;
+                    HighestParty = p.getName;
                 }
             }
-            Console.WriteLine("The document is most likely: " + HighestPartyNgrams);
+            Console.WriteLine("The document is most likely: " + HighestParty);
             Console.ReadLine();
-
-            WriteValues(HighestParty, HighestPartyTFIDF, HighestPartyNgrams, total, totalTFIDF, totalNgrams);
         }
-        public void WriteValues(string HighestParty, string HighestPartyTFIDF, string HighestPartyNgrams, double total, double totalTFIDF, double totalNgrams)
-        {
-            //Writes the results to a file with the same name as the document being classified.
-            StreamWriter sw = new StreamWriter(consultFile.Name);
-            char choice = ' ';
-            if (File.Exists(consultFile.Name))
-            {
-                do
-                {
-                    Console.Clear();
-                    Console.WriteLine("A consultation of this file or a file with the same name already exists. Overwrite? Y/N");
-                    choice = char.Parse(Console.ReadLine().ToUpper());
-                } while (choice != 'Y' || choice != 'N');
-            }
-            else
-            {
-                File.Create(consultFile.Name);
-            }
-            if (choice == 'Y' || !File.Exists(consultFile.Name))
-            {
-                foreach (Party p in m_PartyList)
-                {
-                    sw.WriteLine("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
-                }
-                sw.WriteLine("Using General Probability the document is most likely: " + HighestParty + "\n\n\n");
-                foreach (Party p in m_PartyList)
-                {
-                    sw.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
-                }
-                sw.WriteLine("Using TFIDF the document is most likely: " + HighestPartyTFIDF + "\n\n\n");
-                foreach (Party p in m_PartyList)
-                {
-                    sw.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
-                }
-                sw.WriteLine("Using Ngrams and TFIDF the document is most likely: " + HighestPartyNgrams);
-            }
-        }
+        
         #endregion
     }
 }

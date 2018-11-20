@@ -25,5 +25,25 @@ namespace Party_Affilication_Classifier
         {
             //Required for serialization.
         }
+        public List<string> NgramFromSpeech()
+        {
+            List<string> SpeechWords = new List<string>();
+            List<string> SpeechWordsNew = new List<string>();
+            SpeechWords = m_Content.ToLower().Split(' ', '\n').ToArray().ToList();
+            string temp;
+            //add two words together.
+            for (int i = 0; i < SpeechWords.Count(); i++)
+            {
+                temp = SpeechWords[i];
+                i++;
+                if (!(SpeechWords.Count() - 1 < i))
+                {
+                    temp += " " + SpeechWords[i];
+
+                }
+                SpeechWordsNew.Add(temp);
+            }
+            return SpeechWordsNew;
+        }
     }
 }

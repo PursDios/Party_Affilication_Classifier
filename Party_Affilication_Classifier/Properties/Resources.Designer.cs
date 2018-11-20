@@ -119,29 +119,53 @@ namespace Party_Affilication_Classifier.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Party xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&lt;getName&gt;Coalition&lt;/getName&gt;&lt;getSpeechList&gt;&lt;Speech&gt;&lt;getName&gt;Coalition9thMay2012.txt&lt;/getName&gt;&lt;getContent&gt;Coalition9thMay2012.txt&lt;/getContent&gt;&lt;/Speech&gt;&lt;/getSpeechList&gt;&lt;getDocumentProbability&gt;0&lt;/getDocumentProbability&gt;&lt;getProbability&gt;0.2&lt;/getProbability&gt;&lt;getWordList&gt;&lt;Word&gt;&lt;getWord&gt;lords&lt;/getWord&gt;&lt;getFreq&gt;1&lt;/getFreq&gt;&lt;getProbability&gt;0.00032615786040443573&lt;/getProbabilit [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to a/a/
+        ///a/an/
+        ///a/another/
+        ///a/B-/
+        ///a/B-/
+        ///a/B-plus/
+        ///a/B.A./
+        ///a/B.S./
+        ///a/babble/
+        ///a/babe/
+        ///a/baby/
+        ///a/Baby/
+        ///a/BABY/
+        ///a/baby-sitter/
+        ///a/baccalaureate/
+        ///a/bachelor/
+        ///A/bachelor/
+        ///a/bachelors/
+        ///A/back/
+        ///a/back-door/
+        ///a/back-to-school/
+        ///a/backboard/
+        ///a/backcountry/
+        ///a/backdrop/
+        ///a/backfire/
+        ///A/background/
+        ///a/backhanded/
+        ///a/backing/
+        ///a/backlit/
+        ///a/backpack/
+        ///a/backpacking/
+        ///a/backstage/
+        ///a/backup/
+        ///a/backward/
+        ///a/backwater/
+        ///a/backyard/
+        ///a/bacteria/
+        ///a/bacterium/
+        ///A/bad/
+        ///A/BAD/
+        ///a/badass/
+        ///a/badger/
+        ///a/badminton/ [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Party0 {
+        internal static string Ngrams {
             get {
-                return ResourceManager.GetString("Party0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Party xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&lt;getName&gt;Conservative&lt;/getName&gt;&lt;getSpeechList&gt;&lt;Speech&gt;&lt;getName&gt;Conservative16thNov1994.txt&lt;/getName&gt;&lt;getContent&gt;Conservative16thNov1994.txt&lt;/getContent&gt;&lt;/Speech&gt;&lt;Speech&gt;&lt;getName&gt;Conservative27thMay2015.txt&lt;/getName&gt;&lt;getContent&gt;Conservative27thMay2015.txt&lt;/getContent&gt;&lt;/Speech&gt;&lt;/getSpeechList&gt;&lt;getDocumentProbability&gt;0&lt;/getDocumentProbability&gt;&lt;getProbability&gt;0.4&lt;/getPr [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Party1 {
-            get {
-                return ResourceManager.GetString("Party1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Party xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&lt;getName&gt;Labour&lt;/getName&gt;&lt;getSpeechList&gt;&lt;Speech&gt;&lt;getName&gt;Labour26thNov2003.txt&lt;/getName&gt;&lt;getContent&gt;Labour26thNov2003.txt&lt;/getContent&gt;&lt;/Speech&gt;&lt;Speech&gt;&lt;getName&gt;Labour6thNov2007.txt&lt;/getName&gt;&lt;getContent&gt;Labour6thNov2007.txt&lt;/getContent&gt;&lt;/Speech&gt;&lt;/getSpeechList&gt;&lt;getDocumentProbability&gt;0&lt;/getDocumentProbability&gt;&lt;getProbability&gt;0.4&lt;/getProbability&gt;&lt;getWordList&gt;&lt;Word&gt;&lt;ge [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Party2 {
-            get {
-                return ResourceManager.GetString("Party2", resourceCulture);
+                return ResourceManager.GetString("Ngrams", resourceCulture);
             }
         }
         

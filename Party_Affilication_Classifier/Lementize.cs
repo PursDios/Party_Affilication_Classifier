@@ -12,20 +12,28 @@ namespace Party_Affilication_Classifier
     /// </summary>
     class Lementize
     {
-        //gets the alphabet
-        private char[] m_Alphabet = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
-        //array of vowels
-        private  char[] m_Vowels = "aeiou".ToCharArray();
-        //array of endings that need to be replaced with Li
-        private  char[] m_LiEnds = "cdeghkmnrt".ToCharArray();
-        //double characters
+        /// <summary>
+        /// Gets the alphabet
+        /// </summary>
+        private char[] m_Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToLower().ToCharArray();
+        /// <summary>
+        /// array of vowels
+        /// </summary>
+        private char[] m_Vowels = "aeiou".ToCharArray();
+        /// <summary>
+        /// array of endings that need to be replaced with Li
+        /// </summary>
+        private char[] m_LiEnds = "cdeghkmnrt".ToCharArray();
+        /// <summary>
+        /// Contains all of the occurances of double characters.
+        /// </summary>
         private  string[] m_DoubleChars = { "bb", "dd", "ff", "gg", "mm", "nn", "pp", "rr", "tt" };
 
         /// <summary>
         /// Calls all of the methods to remove or shorten words.
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
+        /// <param name="str">The word you want to Lementize/Stem</param>
+        /// <returns>Returns the word after Lementization/Stemming</returns>
         public string LementizeWord(string str)
         {
             if (str.Length <= 2)
@@ -52,8 +60,8 @@ namespace Party_Affilication_Classifier
         /// <summary>
         /// Checks if the character is a vowel
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        /// <param name="c">The character being checked</param>
+        /// <returns>True or False</returns>
         private bool CheckVowel(char c)
         {
             return m_Vowels.Contains(c);
@@ -62,20 +70,20 @@ namespace Party_Affilication_Classifier
         /// <summary>
         /// Checks if the character is not a vowel
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        /// <param name="c">The character being checked</param>
+        /// <returns>True or False</returns>
         private bool CheckConsonant(char c)
         {
             return !m_Vowels.Contains(c);
         }
 
         /// <summary>
-        /// Checks if r1 is equal to or less than the length of the word.
+        /// Checks if r1 is equal to or less than the length of the word minus the suffix
         /// </summary>
-        /// <param name="word"></param>
-        /// <param name="r1"></param>
-        /// <param name="suffix"></param>
-        /// <returns></returns>
+        /// <param name="word">The word being checked</param>
+        /// <param name="r1">The first occurance of a vowel in the word</param>
+        /// <param name="suffix">The suffix being minused.</param>
+        /// <returns>True or False</returns>
         private bool R1Suffix(string word, int r1, string suffix)
         {
             return r1 <= word.Length - suffix.Length;
@@ -84,10 +92,10 @@ namespace Party_Affilication_Classifier
         /// <summary>
         /// Checks if r2 is equal to or less than the length of the word
         /// </summary>
-        /// <param name="word"></param>
+        /// <param name="word">The word being checked</param>
         /// <param name="r2"></param>
-        /// <param name="suffix"></param>
-        /// <returns></returns>
+        /// <param name="suffix">The suffix being minused</param>
+        /// <returns>True or False</returns>
         private bool R2Suffix(string word, int r2, string suffix)
         {
             return r2 <= word.Length - suffix.Length;
@@ -140,7 +148,7 @@ namespace Party_Affilication_Classifier
             
             if (word.Length == 2)
             {
-                return this.CheckVowel(word[0]) && this.CheckConsonant(word[1]);
+                return CheckVowel(word[0]) && CheckConsonant(word[1]);
             }
 
             //Consonant followed by Vowel followed by Consonant
@@ -267,9 +275,9 @@ namespace Party_Affilication_Classifier
             string[] endingString1 = { "eedly", "eed" };
             foreach (string suffix in endingString1.Where(word.EndsWith))
             {
-                if (this.R1Suffix(word, r1, suffix))
+                if (R1Suffix(word, r1, suffix))
                 {
-                    return this.ReplaceSuffix(word, suffix, "ee");
+                    return ReplaceSuffix(word, suffix, "ee");
                 }
 
                 return word;
@@ -333,29 +341,24 @@ namespace Party_Affilication_Classifier
             {
                 if (word.EndsWith(suffix.Key))
                 {
-                    if (this.R1Suffix(word, r1, suffix.Key) && this.TryReplace(
-                            word,
-                            suffix.Key,
-                            suffix.Value,
-                            out string final))
+                    if (R1Suffix(word, r1, suffix.Key) && TryReplace(word,suffix.Key,suffix.Value,out string final))
                     {
                         return final;
                     }
-
                     return word;
                 }
             }
 
-            if (word.EndsWith("ogi") && this.R1Suffix(word, r1, "ogi") && word[word.Length - 4] == 'l')
+            if (word.EndsWith("ogi") && R1Suffix(word, r1, "ogi") && word[word.Length - 4] == 'l')
             {
-                return this.ReplaceSuffix(word, "ogi", "og");
+                return ReplaceSuffix(word, "ogi", "og");
             }
 
-            if (word.EndsWith("li") & this.R1Suffix(word, r1, "li"))
+            if (word.EndsWith("li") & R1Suffix(word, r1, "li"))
             {
-                if (this.m_LiEnds.Contains(word[word.Length - 3]))
+                if (m_LiEnds.Contains(word[word.Length - 3]))
                 {
-                    return this.ReplaceSuffix(word, "li");
+                    return ReplaceSuffix(word, "li");
                 }
             }
 
@@ -371,26 +374,11 @@ namespace Party_Affilication_Classifier
         /// <returns></returns>
         private string ReplaceMoreSuffixes(string word, int r1, int r2)
         {
-            Dictionary<string, string> suffixes =
-                new Dictionary<string, string>
-                    {
-                        { "ational", "ate" },
-                        { "tional", "tion" },
-                        { "alize", "al" },
-                        { "icate", "ic" },
-                        { "iciti", "ic" },
-                        { "ical", "ic" },
-                        { "ful", null },
-                        { "ness", null }
-                    };
+            Dictionary<string, string> suffixes = new Dictionary<string, string>{{ "ational", "ate" },{ "tional", "tion" },{ "alize", "al" },{ "icate", "ic" },{ "iciti", "ic" },{ "ical", "ic" },{ "ful", null },{ "ness", null }};
 
             foreach (KeyValuePair<string, string> suffix in suffixes.Where(s => word.EndsWith(s.Key)))
             {
-                if (this.R1Suffix(word, r1, suffix.Key) && this.TryReplace(
-                        word,
-                        suffix.Key,
-                        suffix.Value,
-                        out string final))
+                if (R1Suffix(word, r1, suffix.Key) && TryReplace(word,suffix.Key,suffix.Value,out string final))
                 {
                     return final;
                 }
@@ -398,9 +386,9 @@ namespace Party_Affilication_Classifier
 
             if (word.EndsWith("ative"))
             {
-                if (this.R1Suffix(word, r1, "ative") && this.R2Suffix(word, r2, "ative"))
+                if (this.R1Suffix(word, r1, "ative") && R2Suffix(word, r2, "ative"))
                 {
-                    return this.ReplaceSuffix(word, "ative");
+                    return ReplaceSuffix(word, "ative");
                 }
             }
 
@@ -415,28 +403,23 @@ namespace Party_Affilication_Classifier
         /// <returns></returns>
         private string RemoveR2Suffix(string word, int r2)
         {
-            string[] suffixes =
-                {
-                    "al", "ance", "ence", "er", "ic", "able", "ible", "ant", "ement", "ment", "ent", "ism", "ate",
-                    "iti", "ous", "ive", "ize"
-                };
+            string[] suffixes ={"al", "ance", "ence", "er", "ic", "able", "ible", "ant", "ement", "ment", "ent", "ism", "ate","iti", "ous", "ive", "ize"};
             foreach (string s in suffixes)
             {
                 if (word.EndsWith(s))
                 {
-                    if (this.R2Suffix(word, r2, s))
+                    if (R2Suffix(word, r2, s))
                     {
-                        return this.ReplaceSuffix(word, s);
+                        return ReplaceSuffix(word, s);
                     }
 
                     return word;
                 }
             }
 
-            if (word.EndsWith("ion") && this.R2Suffix(word, r2, "ion")
-                                     && new[] { 's', 't' }.Contains(word[word.Length - 4]))
+            if (word.EndsWith("ion") && this.R2Suffix(word, r2, "ion") && new[] { 's', 't' }.Contains(word[word.Length - 4]))
             {
-                return this.ReplaceSuffix(word, "ion");
+                return ReplaceSuffix(word, "ion");
             }
 
             return word;
@@ -451,16 +434,14 @@ namespace Party_Affilication_Classifier
         /// <returns></returns>
         private string RemoveEorLSuffixes(string word, int r1, int r2)
         {
-            if (word.EndsWith("e") && (this.R2Suffix(word, r2, "e")
-                                       || (this.R1Suffix(word, r1, "e")
-                                           && !this.IsShort(this.ReplaceSuffix(word, "e")))))
+            if (word.EndsWith("e") && (R2Suffix(word, r2, "e") || (R1Suffix(word, r1, "e") && !IsShort(ReplaceSuffix(word, "e")))))
             {
-                return this.ReplaceSuffix(word, "e");
+                return ReplaceSuffix(word, "e");
             }
 
-            if (word.EndsWith("l") && this.R2Suffix(word, r2, "l") && word.Length > 1 && word[word.Length - 2] == 'l')
+            if (word.EndsWith("l") && R2Suffix(word, r2, "l") && word.Length > 1 && word[word.Length - 2] == 'l')
             {
-                return this.ReplaceSuffix(word, "l");
+                return ReplaceSuffix(word, "l");
             }
             return word;
         }
