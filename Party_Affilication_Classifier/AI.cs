@@ -25,6 +25,8 @@ namespace Party_Affilication_Classifier
         private FileInfo[] Unfilteredfiles = null;
         //The list of files that the user has selected.
         private List<FileInfo> files = new List<FileInfo>();
+
+        private FileInfo consultFile;
         //The contents of the file the user is consulting.
         List<string> fileContent = new List<string>();
 
@@ -40,6 +42,9 @@ namespace Party_Affilication_Classifier
 
             if (Training)
             {
+                if (!Directory.Exists("TrainingFiles"))
+                    Directory.CreateDirectory("TrainingFiles");
+
                 d = new DirectoryInfo("TrainingFiles");
                 Unfilteredfiles = d.GetFiles("*.txt");
                 
@@ -55,6 +60,10 @@ namespace Party_Affilication_Classifier
 
                     selection = Console.ReadLine();
                     string[] splitSelection = selection.Split(',');
+
+                    if (!Directory.Exists("TestFiles"))
+                        Directory.CreateDirectory("TestFiles");
+
                     d = new DirectoryInfo("TestFiles");
                     Console.Clear();
                     Console.WriteLine("You have selected: ");
@@ -97,7 +106,7 @@ namespace Party_Affilication_Classifier
                     try
                     {
                         FileInfo f = Unfilteredfiles[int.Parse(selection) - 1];
-
+                        consultFile = f;
                         sr = new StreamReader(@"TestFiles\" + f.Name);
                         fileContent = filter.RemoveAll(sr.ReadToEnd().ToLower()).Split(' ', '\n').ToArray().ToList();
                         sr.Close();
@@ -208,8 +217,10 @@ namespace Party_Affilication_Classifier
                             p.getWordList.Add(new Word(splitWords[i], 1, 0));
                         }
                     }
+                    sr.Close();
                 }
             }
+            
         }
         /// <summary>
         /// Gives the probability of each word being in the catagory mentioned.
@@ -237,22 +248,8 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void SaveTraining()
         {
-            DirectoryInfo di = new DirectoryInfo(@"TrainingData\");
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-
-            StreamWriter sr = new StreamWriter("WordProbability.txt");
-            foreach (Party p in m_PartyList)
-            {
-                sr.WriteLine(p.getName);
-                foreach (Word kvp in p.getWordList)
-                {
-                    sr.WriteLine("Word: " + kvp.getWord + ", Frequency: " + kvp.getFreq + ", Probability: " + p.getPcata);
-                }
-            }
+            if (!Directory.Exists("TrainingData"))
+                Directory.CreateDirectory("TrainingData");
 
             XmlSerializer xml = new XmlSerializer(typeof(Party));
             int i = 0;
@@ -500,70 +497,80 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void PrintValues()
         {
-            string HighestParty = "";
-            double HighestValue = 0;
-            double total=0;
+            StreamWriter sw;
+            string HighestParty = "", HighestPartyTFIDF="", HighestPartyNgrams="";
+            double HighestValue = 0, HighestValueTFIDF=0, HighestValueNgrams=0;
+            double total=0, totalTFIDF=0, totalNgrams=0;
 
+            if (!Directory.Exists("OutputFiles"))
+                Directory.CreateDirectory("OutputFiles");
+
+            if (!File.Exists(@"OutputFiles\" + consultFile.Name))
+            {
+                File.Create(@"OutputFiles\" + consultFile.Name);
+            }
+            sw = new StreamWriter(@"OutputFiles\" + consultFile.Name);
             foreach (Party p in m_PartyList)
             {
                 total += p.getDocumentProbability;
             }
             total *= -1;
+
             //Normal Percentages
             foreach (Party p in m_PartyList)
             {
-
                 if (p.getDocumentProbability < HighestValue || HighestValue == 0)
                 {
                     HighestValue = p.getDocumentProbability;
                     HighestParty = p.getName;
                 }
-                Console.WriteLine("Using Maths: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
+                Console.WriteLine("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
+                sw.WriteLine("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%", "text");
             }
             Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
-            HighestValue = 0;
-            HighestParty = "";
-            total = 0;
+            sw.WriteLine("The document is most likely: " + HighestParty + sw.NewLine + sw.NewLine);
 
             foreach (Party p in m_PartyList)
             {
-                total += p.getTFIDF;
+                totalTFIDF += p.getTFIDF;
             }
-            total *= -1;
+            totalTFIDF *= -1;
             //TFIDF Percentages
             foreach (Party p in m_PartyList)
             {
                 Console.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
+                sw.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
                 if (p.getTFIDF < HighestValue || HighestValue == 0)
                 {
-                    HighestValue = p.getTFIDF;
-                    HighestParty = p.getName;
+                    HighestValueTFIDF = p.getTFIDF;
+                    HighestPartyTFIDF = p.getName;
                 }
             }
-            Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
-            HighestValue = 0;
-            HighestParty = "";
-            total = 0;
+            Console.WriteLine("The document is most likely: " + HighestPartyTFIDF + "\n\n\n");
+            sw.WriteLine("The document is most likely: " + HighestPartyTFIDF + sw.NewLine + sw.NewLine);
 
             foreach (Party p in m_PartyList)
             {
-                total += p.getNgrams;
+                totalNgrams += p.getNgrams;
             }
-            total *= -1;
+            totalNgrams *= -1;
             //Ngram Percentages
             foreach (Party p in m_PartyList)
             {
                 Console.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
-                if(p.getNgrams < HighestValue || HighestValue == 0)
+                sw.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
+                if (p.getNgrams < HighestValue || HighestValue == 0)
                 {
-                    HighestValue = p.getNgrams;
-                    HighestParty = p.getName;
+                    HighestValueNgrams = p.getNgrams;
+                    HighestPartyNgrams = p.getName;
                 }
             }
-            Console.WriteLine("The document is most likely: " + HighestParty);
+            Console.WriteLine("The document is most likely: " + HighestPartyNgrams);
+            sw.WriteLine("The document is most likely: " + HighestPartyNgrams);
+
+            sw.Close();
             Console.ReadLine();
         }
-        
         #endregion
     }
 }

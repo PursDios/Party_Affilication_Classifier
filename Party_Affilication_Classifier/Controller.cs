@@ -99,6 +99,9 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private void LoadPriorTraining()
         {
+            if (!Directory.Exists("TrainingData"))
+                Directory.CreateDirectory("TrainingData");
+
             List<Party> partyList = new List<Party>();
             DirectoryInfo d = new DirectoryInfo("TrainingData");
             Stream stream;
