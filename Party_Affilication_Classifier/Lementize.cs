@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Project: Party Classifer
+ * Filename: Lementize.cs
+ * Created: 15/11/2018
+ * Edited: 21/11/2018
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

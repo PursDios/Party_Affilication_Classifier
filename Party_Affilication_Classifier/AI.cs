@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Project: Party Classifer
+ * Filename: AI.cs
+ * Created: 28/10/2018
+ * Edited: 21/11/2018
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,10 +67,10 @@ namespace Party_Affilication_Classifier
                     selection = Console.ReadLine();
                     string[] splitSelection = selection.Split(',');
 
-                    if (!Directory.Exists("TestFiles"))
-                        Directory.CreateDirectory("TestFiles");
+                    if (!Directory.Exists("TrainingFiles"))
+                        Directory.CreateDirectory("TrainingFiles");
 
-                    d = new DirectoryInfo("TestFiles");
+                    d = new DirectoryInfo("TrainingFiles");
                     Console.Clear();
                     Console.WriteLine("You have selected: ");
                     try
@@ -169,14 +175,14 @@ namespace Party_Affilication_Classifier
                 }
             }
             //get the total number of files.
-            foreach (Party p2 in m_PartyList)
+            foreach (Party p in m_PartyList)
             {
-                totalDocs = totalDocs + p2.getSpeechList.Count();
+                totalDocs = totalDocs + p.getSpeechList.Count();
             }
             //calculate the Pcatagory
-            foreach (Party p3 in m_PartyList)
+            foreach (Party p in m_PartyList)
             {
-                p3.getPcata = ((double)p3.getSpeechList.Count() / totalDocs);
+                p.getPcata = ((double)p.getSpeechList.Count() / totalDocs);
             }
         }
 
@@ -235,9 +241,9 @@ namespace Party_Affilication_Classifier
             foreach (Party p in m_PartyList)
             {
                 Console.WriteLine("" + p.getName + "");
-                foreach (Word kvp in p.getWordList)
+                foreach (Word w in p.getWordList)
                 {
-                    kvp.getProbability = ((double)(kvp.getProbability + 1) / (p.getWordList.Count() + totalWords));
+                    w.getProbability = ((double)(w.getProbability + 1) / (p.getWordList.Count() + totalWords));
                 }
             }
             Console.Clear();
@@ -569,4 +575,3 @@ namespace Party_Affilication_Classifier
         #endregion
     }
 }
-    

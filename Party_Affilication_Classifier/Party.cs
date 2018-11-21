@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Project: Party Classifer
+ * Filename: Party.cs
+ * Created: 28/10/2018
+ * Edited: 21/11/2018
+ */
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
