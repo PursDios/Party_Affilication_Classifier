@@ -497,19 +497,14 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void PrintValues()
         {
-            StreamWriter sw;
             string HighestParty = "", HighestPartyTFIDF="", HighestPartyNgrams="";
             double HighestValue = 0, HighestValueTFIDF=0, HighestValueNgrams=0;
             double total=0, totalTFIDF=0, totalNgrams=0;
+            List<string> outputs = new List<string>();
 
             if (!Directory.Exists("OutputFiles"))
                 Directory.CreateDirectory("OutputFiles");
 
-            if (!File.Exists(@"OutputFiles\" + consultFile.Name))
-            {
-                File.Create(@"OutputFiles\" + consultFile.Name);
-            }
-            sw = new StreamWriter(@"OutputFiles\" + consultFile.Name);
             foreach (Party p in m_PartyList)
             {
                 total += p.getDocumentProbability;
@@ -524,11 +519,9 @@ namespace Party_Affilication_Classifier
                     HighestValue = p.getDocumentProbability;
                     HighestParty = p.getName;
                 }
-                Console.WriteLine("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
-                sw.WriteLine("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%", "text");
+                outputs.Add("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
             }
-            Console.WriteLine("The document is most likely: " + HighestParty + "\n\n\n");
-            sw.WriteLine("The document is most likely: " + HighestParty + sw.NewLine + sw.NewLine);
+            outputs.Add("The document is most likely: " + HighestParty + "\n\n\n");
 
             foreach (Party p in m_PartyList)
             {
@@ -538,16 +531,14 @@ namespace Party_Affilication_Classifier
             //TFIDF Percentages
             foreach (Party p in m_PartyList)
             {
-                Console.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
-                sw.WriteLine("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
-                if (p.getTFIDF < HighestValue || HighestValue == 0)
+                outputs.Add("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
+                if (p.getTFIDF < HighestValueTFIDF || HighestValueTFIDF == 0)
                 {
                     HighestValueTFIDF = p.getTFIDF;
                     HighestPartyTFIDF = p.getName;
                 }
             }
-            Console.WriteLine("The document is most likely: " + HighestPartyTFIDF + "\n\n\n");
-            sw.WriteLine("The document is most likely: " + HighestPartyTFIDF + sw.NewLine + sw.NewLine);
+            outputs.Add("The document is most likely: " + HighestPartyTFIDF + "\n\n\n");
 
             foreach (Party p in m_PartyList)
             {
@@ -557,18 +548,22 @@ namespace Party_Affilication_Classifier
             //Ngram Percentages
             foreach (Party p in m_PartyList)
             {
-                Console.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
-                sw.WriteLine("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / total) * 100 + "%");
-                if (p.getNgrams < HighestValue || HighestValue == 0)
+                outputs.Add("Using Ngrams and TFIDF " + p.getName + " " + ((p.getNgrams * -1) / totalNgrams) * 100 + "%");
+                if (p.getNgrams < HighestValueNgrams || HighestValueNgrams == 0)
                 {
                     HighestValueNgrams = p.getNgrams;
                     HighestPartyNgrams = p.getName;
                 }
             }
-            Console.WriteLine("The document is most likely: " + HighestPartyNgrams);
-            sw.WriteLine("The document is most likely: " + HighestPartyNgrams);
+            outputs.Add("The document is most likely: " + HighestPartyNgrams);
 
-            sw.Close();
+            //outputs to the console.
+            foreach(string str in outputs)
+            {
+                Console.WriteLine(str);
+            }
+            //outputs to a file.
+            File.WriteAllLines(consultFile.Name, outputs);
             Console.ReadLine();
         }
         #endregion
