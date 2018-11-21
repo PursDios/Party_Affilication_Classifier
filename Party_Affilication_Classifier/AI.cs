@@ -237,8 +237,12 @@ namespace Party_Affilication_Classifier
         /// </summary>
         public void SaveTraining()
         {
-            DirectoryInfo di = new DirectoryInfo(@"TrainingData\");
+            if (!Directory.Exists("TrainingData"))
+            {
+                Directory.CreateDirectory("TrainingData");
+            }
 
+            DirectoryInfo di = new DirectoryInfo("TrainingData");
             foreach (FileInfo file in di.GetFiles())
             {
                 file.Delete();

@@ -86,15 +86,6 @@
     <None Include="bin\Debug\TestFiles\test3.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\Debug\TrainingData\Party0.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\TrainingData\Party1.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\TrainingData\Party2.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="bin\Debug\Ngrams.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
