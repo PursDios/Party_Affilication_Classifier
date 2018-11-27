@@ -521,7 +521,7 @@ namespace Party_Affilication_Classifier
                 }
                 outputs.Add("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
             }
-            outputs.Add("The document is most likely: " + HighestParty + "\n\n\n");
+            outputs.Add("The document is most likely: " + HighestParty + Environment.NewLine);
 
             foreach (Party p in m_PartyList)
             {
@@ -538,7 +538,7 @@ namespace Party_Affilication_Classifier
                     HighestPartyTFIDF = p.getName;
                 }
             }
-            outputs.Add("The document is most likely: " + HighestPartyTFIDF + "\n\n\n");
+            outputs.Add("The document is most likely: " + HighestPartyTFIDF + Environment.NewLine);
 
             foreach (Party p in m_PartyList)
             {

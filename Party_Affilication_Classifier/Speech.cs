@@ -25,6 +25,10 @@ namespace Party_Affilication_Classifier
         {
             //Required for serialization.
         }
+        /// <summary>
+        /// Creates a list of Ngrams from the content of a speech
+        /// </summary>
+        /// <returns>Returns a list of strings (the Ngram list)</returns>
         public List<string> NgramFromSpeech()
         {
             List<string> SpeechWords = new List<string>();

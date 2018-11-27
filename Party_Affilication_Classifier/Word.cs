@@ -8,24 +8,49 @@ namespace Party_Affilication_Classifier
 {
     public class Word
     {
-        //The word
+        /// <summary>
+        /// The word
+        /// </summary>
         private string m_Word;
+        /// <summary>
+        /// get or set the word.
+        /// </summary>
         public string getWord { get { return m_Word; } set { m_Word = value; } }
 
-        //The frequency of the word occuring
+        /// <summary>
+        /// The frequency of the word occuring
+        /// </summary>
         private int m_Freq;
+        /// <summary>
+        /// get or set the word frequency
+        /// </summary>
         public int getFreq { get { return m_Freq; } set { m_Freq = value; } }
 
-        //the probability of the word
+        /// <summary>
+        /// the probability of the word
+        /// </summary>
         private double m_Probability;
+        /// <summary>
+        /// get or set the word probability
+        /// </summary>
         public double getProbability { get { return m_Probability; } set { m_Probability = value; } }
 
-        //the TFIDF of the word
+        /// <summary>
+        /// The TFIDF probability of the word
+        /// </summary>
         private double m_TFIDF;
+        /// <summary>
+        /// get or set the TFIDF probability of the word.
+        /// </summary>
         public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
 
-        //The number of documents the word appears in
+        /// <summary>
+        /// The number of documents the word appears in
+        /// </summary>
         private double m_NumberOfDocs;
+        /// <summary>
+        /// get or set the number of documents the word appears in
+        /// </summary>
         public double getNumberOfDocs { get { return m_NumberOfDocs; } set { m_NumberOfDocs = value; } }
 
         /// <summary>
