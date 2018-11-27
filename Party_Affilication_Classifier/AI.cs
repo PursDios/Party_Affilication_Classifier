@@ -84,7 +84,6 @@ namespace Party_Affilication_Classifier
                         retry = true;
                     }
                     
-                    Console.ReadLine();
                 } while (retry == true);
             }
             else if(!Training)
