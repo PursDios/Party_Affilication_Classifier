@@ -54,7 +54,7 @@ namespace Party_Affilication_Classifier
                     case '2':
                         Consult();
                         break;
-                    case 'Q':
+                    case 'q':
                         retry = false;
                         break;
                     default:
