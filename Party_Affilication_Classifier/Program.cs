@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.IO;
 
 namespace Party_Affilication_Classifier
@@ -18,6 +17,7 @@ namespace Party_Affilication_Classifier
     {
         static void Main(string[] args)
         {
+            //Starts the program.
             Controller c = new Controller();
             c.MainMenu();
         }

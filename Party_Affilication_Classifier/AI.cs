@@ -67,9 +67,6 @@ namespace Party_Affilication_Classifier
                     selection = Console.ReadLine();
                     string[] splitSelection = selection.Split(',');
 
-                    if (!Directory.Exists("TrainingFiles"))
-                        Directory.CreateDirectory("TrainingFiles");
-
                     d = new DirectoryInfo("TrainingFiles");
                     Console.Clear();
                     Console.WriteLine("You have selected: ");
@@ -95,6 +92,9 @@ namespace Party_Affilication_Classifier
             }
             else if(!Training)
             {
+                if (!Directory.Exists("TestFiles"))
+                    Directory.CreateDirectory("TestFiles");
+
                 Filter filter = new Filter();
                 d = new DirectoryInfo("TestFiles");
                 Unfilteredfiles = d.GetFiles("*.txt");
@@ -527,7 +527,7 @@ namespace Party_Affilication_Classifier
                 }
                 outputs.Add("Using General Probability: " + p.getName + " " + ((p.getDocumentProbability * -1) / total) * 100 + "%");
             }
-            outputs.Add("The document is most likely: " + HighestParty + "\n\n\n");
+            outputs.Add("The document is most likely: " + HighestParty + Environment.NewLine);
 
             foreach (Party p in m_PartyList)
             {
@@ -544,7 +544,7 @@ namespace Party_Affilication_Classifier
                     HighestPartyTFIDF = p.getName;
                 }
             }
-            outputs.Add("The document is most likely: " + HighestPartyTFIDF + "\n\n\n");
+            outputs.Add("The document is most likely: " + HighestPartyTFIDF + Environment.NewLine);
 
             foreach (Party p in m_PartyList)
             {
@@ -570,6 +570,10 @@ namespace Party_Affilication_Classifier
             }
             //outputs to a file.
             File.WriteAllLines(consultFile.Name, outputs);
+
+            if (File.Exists(@"OutputFiles\" + consultFile.Name))
+                File.Delete(@"OutputFiles\" + consultFile.Name);
+            Directory.Move(consultFile.Name, @"OutputFiles\" + consultFile.Name);
             Console.ReadLine();
         }
         #endregion

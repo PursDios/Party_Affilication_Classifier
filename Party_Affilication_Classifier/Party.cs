@@ -18,20 +18,40 @@ namespace Party_Affilication_Classifier
     /// </summary>
     public class Party
     {
-        //The name of the party.
+        /// <summary>
+        /// The name of the party.
+        /// </summary>
         private string m_Name = "";
+        /// <summary>
+        /// get or set the name of the party
+        /// </summary>
         public string getName { get { return m_Name; } set { m_Name = value; } }
 
-        //The list of speeches associated with the party
+        /// <summary>
+        /// The list of speeches associated with the party
+        /// </summary>
         private List<Speech> m_SpeechList = new List<Speech>();
+        /// <summary>
+        /// get or set the speech list
+        /// </summary>
         public List<Speech> getSpeechList { get { return m_SpeechList; } set { m_SpeechList = value; } }
 
-        //The likelyhood of a document being associated with this party.
+        /// <summary>
+        /// The likelyhood of a document being associated with this party.
+        /// </summary>
         private double m_DocumentProbability = 0;
+        /// <summary>
+        /// get or set the document probability
+        /// </summary>
         public double getDocumentProbability { get { return m_DocumentProbability; } set { m_DocumentProbability = value; } }
 
-        //The P(cata) of the party.
+        /// <summary>
+        /// The P(cata) of the party.
+        /// </summary>
         private double m_Pcata = 0;
+        /// <summary>
+        /// get or set the P(cata) of the party
+        /// </summary>
         public double getPcata { get { return m_Pcata; } set { m_Pcata = value; } }
 
         //The list of words associated with the party.
