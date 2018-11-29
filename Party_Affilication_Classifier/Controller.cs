@@ -31,6 +31,7 @@ namespace Party_Affilication_Classifier
             char choice=' ';
             do
             {
+                Console.Clear();
                 Console.WriteLine("1) Undertake Training");
                 Console.WriteLine("2) Undertake a Classification");
                 Console.WriteLine("Q) Exit");
@@ -38,7 +39,6 @@ namespace Party_Affilication_Classifier
                 {
                     choice = char.Parse(Console.ReadLine());
                     choice = char.ToLower(choice);
-                    retry = false;
                 }
                 catch
                 {
@@ -55,6 +55,7 @@ namespace Party_Affilication_Classifier
                         Consult();
                         break;
                     case 'Q':
+                        retry = false;
                         break;
                     default:
                         Console.WriteLine("Please only input 1, 2 or Q");
