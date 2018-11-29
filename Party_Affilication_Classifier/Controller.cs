@@ -31,6 +31,8 @@ namespace Party_Affilication_Classifier
             char choice=' ';
             do
             {
+                retry = true;
+                choice = ' ';
                 Console.Clear();
                 Console.WriteLine("1) Undertake Training");
                 Console.WriteLine("2) Undertake a Classification");
@@ -80,7 +82,8 @@ namespace Party_Affilication_Classifier
 
             doneTraining = true;
             Console.WriteLine("Training Complete\nDo you wish to proceed to consultation? Y/N");
-            char choice = char.Parse(Console.ReadLine());
+
+            char.TryParse(Console.ReadLine(),out char choice);
             if(choice == 'Y' || choice == 'y')
                 Consult();
         }
