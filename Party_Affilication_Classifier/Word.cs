@@ -1,10 +1,4 @@
-﻿/*
- * Project: Party Classifer
- * Filename: Word.cs
- * Created: 30/10/2018
- * Edited: 21/11/2018
- */
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +9,11 @@ namespace Party_Affilication_Classifier
     public class Word
     {
         /// <summary>
-        /// The word.
+        /// The word
         /// </summary>
         private string m_Word;
         /// <summary>
-        /// get or set the word
+        /// get or set the word.
         /// </summary>
         public string getWord { get { return m_Word; } set { m_Word = value; } }
 
@@ -28,7 +22,7 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private int m_Freq;
         /// <summary>
-        /// get or set the frequency of the word occuring
+        /// get or set the word frequency
         /// </summary>
         public int getFreq { get { return m_Freq; } set { m_Freq = value; } }
 
@@ -37,16 +31,16 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private double m_Probability;
         /// <summary>
-        /// get or set the probability of the word
+        /// get or set the word probability
         /// </summary>
         public double getProbability { get { return m_Probability; } set { m_Probability = value; } }
 
         /// <summary>
-        /// the TFIDF of the word
+        /// The TFIDF probability of the word
         /// </summary>
         private double m_TFIDF;
         /// <summary>
-        /// get or set the TFIDF of a word
+        /// get or set the TFIDF probability of the word.
         /// </summary>
         public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
 
@@ -55,7 +49,7 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private double m_NumberOfDocs;
         /// <summary>
-        /// get or set the number of documents.
+        /// get or set the number of documents the word appears in
         /// </summary>
         public double getNumberOfDocs { get { return m_NumberOfDocs; } set { m_NumberOfDocs = value; } }
 
@@ -71,9 +65,7 @@ namespace Party_Affilication_Classifier
             m_Freq = p_Freq;
             m_Probability = p_Probability;
         }
-        /// <summary>
-        /// Needed for serialization.
-        /// </summary>
+        //Needed for serialization.
         public Word()
         {
         }

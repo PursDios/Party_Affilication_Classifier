@@ -1,10 +1,4 @@
-﻿/*
- * Project: Party Classifer
- * Filename: Party.cs
- * Created: 28/10/2018
- * Edited: 21/11/2018
- */
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +13,7 @@ namespace Party_Affilication_Classifier
     public class Party
     {
         /// <summary>
-        /// The name of the party.
+        /// the name of the party
         /// </summary>
         private string m_Name = "";
         /// <summary>
@@ -28,11 +22,11 @@ namespace Party_Affilication_Classifier
         public string getName { get { return m_Name; } set { m_Name = value; } }
 
         /// <summary>
-        /// The list of speeches associated with the party
+        /// The list of speeches associated with that party.
         /// </summary>
         private List<Speech> m_SpeechList = new List<Speech>();
         /// <summary>
-        /// get or set the speech list
+        /// Get or set The list of speeches associated with that party.
         /// </summary>
         public List<Speech> getSpeechList { get { return m_SpeechList; } set { m_SpeechList = value; } }
 
@@ -41,7 +35,7 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private double m_DocumentProbability = 0;
         /// <summary>
-        /// get or set the document probability
+        /// get or set the documentProbability.
         /// </summary>
         public double getDocumentProbability { get { return m_DocumentProbability; } set { m_DocumentProbability = value; } }
 
@@ -50,19 +44,35 @@ namespace Party_Affilication_Classifier
         /// </summary>
         private double m_Pcata = 0;
         /// <summary>
-        /// get or set the P(cata) of the party
+        /// get or set the P(cata) of the party.
         /// </summary>
         public double getPcata { get { return m_Pcata; } set { m_Pcata = value; } }
 
-        //The list of words associated with the party.
+        /// <summary>
+        /// the list of words associated with this party.
+        /// </summary>
         private List<Word> m_WordList = new List<Word>();
+        /// <summary>
+        /// get or set the list of words associated with this party.
+        /// </summary>
         public List<Word> getWordList { get { return m_WordList; } set { m_WordList = value; } }
 
-        //the TFIDF probability of a document being associated with this party.
+        /// <summary>
+        /// the TFIDF probability of a document being associated with this party.
+        /// </summary>
         private double m_TFIDF;
+        /// <summary>
+        /// get or set the TFIDF probability of a document being associated with this party.
+        /// </summary>
         public double getTFIDF { get { return m_TFIDF; } set { m_TFIDF = value; } }
 
+        /// <summary>
+        /// The Ngrams probability of the document being associated with this party.
+        /// </summary>
         private double m_Ngrams;
+        /// <summary>
+        /// get or set the Ngram probability.
+        /// </summary>
         public double getNgrams { get { return m_Ngrams; } set { m_Ngrams = value; } }
 
         /// <summary>

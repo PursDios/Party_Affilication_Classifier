@@ -12,9 +12,10 @@ using System.Threading.Tasks;
 
 namespace Party_Affilication_Classifier
 {
+    //source:
     //http://snowballstem.org/algorithms/english/stemmer.html 
     /// <summary>
-    /// Shortens words (Stems/Lementizes words
+    /// Shortens words (Stems/Lementizes words)
     /// </summary>
     class Lementize
     {
