@@ -536,7 +536,7 @@ namespace Party_Affilication_Classifier
             //TFIDF Percentages
             foreach (Party p in m_PartyList)
             {
-                outputs.Add("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / total) * 100 + "%");
+                outputs.Add("Using TFIDF: " + p.getName + " " + ((p.getTFIDF * -1) / totalTFIDF) * 100 + "%");
                 if (p.getTFIDF < HighestValueTFIDF || HighestValueTFIDF == 0)
                 {
                     HighestValueTFIDF = p.getTFIDF;
